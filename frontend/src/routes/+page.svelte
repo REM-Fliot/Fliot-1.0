@@ -1,2 +1,14 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	// import Navbar from "./navbar.svelte";
+	import SearchFeature from './search-feature.svelte';
+</script>
+
+<div>
+	<!-- <Navbar />
+    <h1>Dashboard</h1> -->
+	<SearchFeature />
+	<div />
+</div>
+
+<style>
+</style>
