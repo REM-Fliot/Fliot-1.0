@@ -1,9 +1,8 @@
 <script>
-	import { get } from "svelte/store";
-
-
-	import { authHandlers, authStore } from "../../store/store";
+	import { authHandlers } from "../../store/store";
 	import { auth } from "$lib/firebase/firebase";
+	import SearchFeature from "../../components/Search_feature.svelte";
+
 	let email = null
 	auth.onAuthStateChanged((user) => {
 		if (user) {
@@ -21,3 +20,5 @@
 {/if}
 
 <button on:click={authHandlers.logout}>LOGOUT</button>
+
+<SearchFeature/>
