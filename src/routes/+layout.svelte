@@ -1,22 +1,22 @@
-<script >
+<script lang = "ts">
     import { onMount } from 'svelte'
     import { auth } from '../lib/firebase/firebase'
 	import { authStore } from '../store/store';
 
-    const nonAuthRoutes = ['/'] //Only the login page for now !!UPDATE LATER!!
+    const nonAuthRoutes = ['/login'] //Only the login page for now !!UPDATE LATER!!
 
     // On mount = on page load
     onMount(() => {
         console.log("Mounting")
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             const currentPath = window.location.pathname
-            if (user) {
-                if (currentPath === '/') window.location.href = '/dashboard'
+            if (user && user.email) {
+                if (currentPath === '/login') window.location.href = '/dashboard'
                 authStore.set({email: user.email})
                 console.log(user.email)
             }
             else {
-                if (!nonAuthRoutes.includes(currentPath)) window.location.href = '/'
+                if (!nonAuthRoutes.includes(currentPath)) window.location.href = '/login'
                 authStore.set({email:""})
             }
             return

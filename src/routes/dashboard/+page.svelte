@@ -1,11 +1,11 @@
-<script>
+<script lang = "ts">
 	import { authHandlers } from "../../store/store";
 	import { auth } from "$lib/firebase/firebase";
 	import SearchFeature from "../../components/Search_feature.svelte";
 
-	let email = null
+	let email = ""
 	auth.onAuthStateChanged((user) => {
-		if (user) {
+		if (user && user.email) {
 			email = user.email
 			// ...
 		} else {
