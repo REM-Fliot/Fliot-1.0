@@ -1,7 +1,7 @@
 <script lang = "ts">
-	import { authHandlers } from "../../store/store";
+	import { authHandlers } from "../../../store/authstore";
 	import { auth } from "$lib/firebase/firebase";
-	import SearchFeature from "../../components/Search_feature.svelte";
+	import SearchFeature from "../../../components/Search_feature.svelte";
 
 	let email = ""
 	auth.onAuthStateChanged((user) => {

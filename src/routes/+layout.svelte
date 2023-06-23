@@ -1,30 +1,28 @@
 <script lang = "ts">
     import { onMount } from 'svelte'
     import { auth } from '../lib/firebase/firebase'
-	import { authStore } from '../store/store';
 
     const nonAuthRoutes = ['/login'] //Only the login page for now !!UPDATE LATER!!
 
-    // On mount = on page load
-    onMount(() => {
-        console.log("Mounting")
-        const unsubscribe = auth.onAuthStateChanged(async (user) => {
-            const currentPath = window.location.pathname
-            if (user && user.email) {
-                if (currentPath === '/login') window.location.href = '/dashboard'
-                authStore.set({email: user.email})
-                console.log(user.email)
-            }
-            else {
-                if (!nonAuthRoutes.includes(currentPath)) window.location.href = '/login'
-                authStore.set({email:""})
-            }
-            return
+    //On mount = on page load
+    // onMount(() => {
+    //     console.log("Mounting")
+    //     const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    //         const currentPath = window.location.pathname
+    //         if (user && user.email) {
+    //             if (currentPath === '/login') window.location.href = '/dashboard'
+    //             // authStore.set({email: user.email})
+    //             // console.log(user.email)
+    //         }
+    //         else {
+    //             if (!nonAuthRoutes.includes(currentPath)) window.location.href = '/login'
+    //         }
+    //         return
             
             
             
-        })
-    })
+    //     })
+    // })
 </script>
 
 <h1 id = "logo"><span id = "black">Fl</span><span id= "blue">iot</span></h1>
