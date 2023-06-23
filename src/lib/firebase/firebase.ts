@@ -35,5 +35,5 @@ const firebase_app = app_init;
 
 //export const db = getFirestore(firebase_app) <- Database (when we implement it)
 export const auth = getAuth(firebase_app)
-setPersistence(auth, browserSessionPersistence)
+// setPersistence(auth, browserSessionPersistence)
 
