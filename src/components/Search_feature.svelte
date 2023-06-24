@@ -1,29 +1,12 @@
 <script>
 	import { construct_svelte_component } from 'svelte/internal';
-
-	class Asset {
-		constructor(name, id, sector) {
-			this.name = name;
-			this.id = id;
-			this.sector = sector;
-		}
-	}
-
-	// const Asset_class_properties = ['name', 'id', 'sector'];
+	import { Asset, Asset_list } from '../store/store';
 
 	let name_input = '',
 		id_input = '',
 		sector_input = '';
 
-	const Asset_list = [
-		new Asset('Magnetic Resonance Imaging (MRI) Scanner', '598', 'Radiology'),
-		new Asset('Computed Tomography (CT) Scanner', '326', 'Radiology'),
-		new Asset('Linear Accelerator (LINAC)', '721', 'Oncology'),
-		new Asset('Positron Emission Tomography (PET) Scanner', '492', 'Nuclear Medicine'),
-		new Asset('Robotic Surgical System', '185', 'Surgery'),
-		new Asset('Gamma Camera', '622', 'Nuclear Medicine'),
-		new Asset('Lithotripsy Machine', '851', 'Urology')
-	];
+	let selected_assets = [];
 
 	let returned_items = Asset_list;
 
@@ -42,6 +25,12 @@
 							return asset.sector.toLowerCase().trim().includes(sector_input.toLowerCase().trim());
 						});
 	};
+
+	const handleAssetClick = (index) => {
+		selected_assets = !selected_assets.includes(index)
+			? [...selected_assets, index]
+			: selected_assets.filter((item) => item !== index);
+	};
 </script>
 
 <div>
@@ -57,12 +46,18 @@
 			<th class="table-heading">Asset ID</th>
 			<th class="table-heading">Asset Sector</th>
 		</tr>
-		{#each returned_items as result}
-			<tr>
+		{#each returned_items as result, index}
+			<tr class="table-row" on:click={() => handleAssetClick(index)}>
 				<td class="table-entry">{result.name}</td>
 				<td class="table-entry">{result.id}</td>
 				<td class="table-entry">{result.sector}</td>
 			</tr>
+			{#if selected_assets.includes(index)}
+				<div>
+					<a href={`./${result.id}/new_report`}>+ New Report</a>
+					<a href={`./${result.id}`}>View History & Files</a>
+				</div>
+			{/if}
 		{/each}
 	</table>
 </div>
@@ -79,5 +74,9 @@
 	.table-entry {
 		margin-left: 20px;
 		padding-right: 50px;
+	}
+	.table-row:hover {
+		background-color: aqua;
+		cursor: pointer;
 	}
 </style>
