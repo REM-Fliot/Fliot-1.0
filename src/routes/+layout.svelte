@@ -6,11 +6,23 @@
     import { page } from '$app/stores';  
     import { get } from 'svelte/store';
 	import Spinner from '../components/Spinner.svelte';
-    import { user } from '../store/authstore';
 	import { logEvent } from 'firebase/analytics';
+	import { redirect } from '@sveltejs/kit';
+    import { is_loading } from '../store/authstore';
 
-    let render = undefined
+    
+    // let isLoading = true;
+    let render = undefined;
     let authenticated_route = $page.route.id?.startsWith("/(authenticated)")
+    
+
+
+
+    // export let data
+    // console.log(data)
+
+
+
     // // let authenticated_route = false;
     // user.subscribe(val =>{
     //     render = val
@@ -21,32 +33,37 @@
     // // let user = auth.currentUser
     // //On mount = on page load
 
-    console.log(render)
-
+    // is_loading.subscribe(()=>{
+    //     render = !is_loading
+    // })
+    // console.log(render)
     onMount(() => {
-        render = undefined
+        console.log($is_loading)
+        // isLoading = true;
+
+        // const getCurrentUser = async () => {
+        //     const currentUser = await auth.currentUser
+        //     //Access
+        //     console.log(currentUser)
+        // }
+        // getCurrentUser()
+
+
         onAuthStateChanged(auth, async (user) => {
-            render = user
             console.log(user)
-            console.log(render)
-            
             if (authenticated_route) {
-                if (user) {
-                    
+                if (!user) {
+                    await goto("/login")
                 }
-                else {
-                    goto("/login")
-                    let authenticated_route = false
-                    // console.log($page.route.id)
-                }
-                
             }
             else {
                 if (user) {
-                    goto("/dashboard")
-                    let authenticated_route = true
+                    await goto("/dashboard")
                 }
             }
+            is_loading.set(false)
+
+            // isLoading = false
             
         });
     })
@@ -72,12 +89,23 @@
     // })
 </script>
 
+
+
 <h1 id = "logo"><span id = "black">Fl</span><span id= "blue">iot</span></h1>
+<!-- {console.log("---------------")}
+{console.log(render)}
+{console.log((render === null) && $page.route.id.includes("dashboard"))}
+{console.log("---------------")} -->
+{console.log($page.route.id)}
 <div>
-    {#if render === undefined}
-        <Spinner/> 
+
+    <!-- {#if render === undefined || (render === null && authenticated_route) || (render !== null && authenticated_route)} -->
+    {#if $is_loading || true}
+        <Spinner/>
+        <!-- {browser ? goto("/login") : false}  -->
     {:else}
-        <slot/>
+
+    <slot/>
     {/if}
 
 </div>
