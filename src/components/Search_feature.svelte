@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { construct_svelte_component } from 'svelte/internal';
 	import { Asset, Asset_list } from '../store/store';
 

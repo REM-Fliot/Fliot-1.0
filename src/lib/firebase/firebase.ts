@@ -1,7 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { getApps, getApp, deleteApp, initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import {getAuth} from 'firebase/auth'
+import { getAuth, setPersistence,browserSessionPersistence } from 'firebase/auth'
+import { browser } from "$app/environment";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -30,8 +31,9 @@ if (getApps().length) {
 app_init = initializeApp(firebaseConfig, "CLIENT");
 
 const firebase_app = app_init;
-// const analytics = getAnalytics(firebase_app);
+// const analytics = getAnalytics(firebase_app); <- Analytics (when we implement it)
 
 //export const db = getFirestore(firebase_app) <- Database (when we implement it)
 export const auth = getAuth(firebase_app)
+// setPersistence(auth, browserSessionPersistence)
 
