@@ -1,111 +1,45 @@
 <script lang = "ts">
     import { onMount } from 'svelte'
     import { auth } from '../lib/firebase/firebase'
-	import { onAuthStateChanged, updatePhoneNumber } from 'firebase/auth';
+	import { onAuthStateChanged } from 'firebase/auth';
 	import { goto } from '$app/navigation';
     import { page } from '$app/stores';  
-    import { get } from 'svelte/store';
 	import Spinner from '../components/Spinner.svelte';
-	import { logEvent } from 'firebase/analytics';
-	import { redirect } from '@sveltejs/kit';
-    import { is_loading } from '../store/authstore';
+    import { is_loading } from '../store/authUser';
 
     
-    // let isLoading = true;
-    let render = undefined;
-    let authenticated_route = $page.route.id?.startsWith("/(authenticated)")
+    //All routes under the (protected) folder
+    let protected_route = $page.route.id?.startsWith("/(protected)")
     
-
-
-
-    // export let data
-    // console.log(data)
-
-
-
-    // // let authenticated_route = false;
-    // user.subscribe(val =>{
-    //     render = val
-    //     if (authenticated_route)
-    //     console.log(render)
-    // })
-    
-    // // let user = auth.currentUser
-    // //On mount = on page load
-
-    // is_loading.subscribe(()=>{
-    //     render = !is_loading
-    // })
-    // console.log(render)
+    //onMount = immediately when the page renders
     onMount(() => {
-        console.log($is_loading)
-        // isLoading = true;
-
-        // const getCurrentUser = async () => {
-        //     const currentUser = await auth.currentUser
-        //     //Access
-        //     console.log(currentUser)
-        // }
-        // getCurrentUser()
-
-
         onAuthStateChanged(auth, async (user) => {
-            console.log(user)
-            if (authenticated_route) {
+            //onAuthStateChanged = when the user variable is resolve - either it is null (not signed in), or User object.
+            if (protected_route) {
                 if (!user) {
+                    //Not logged in but trying to access protected routes
                     await goto("/login")
                 }
             }
             else {
                 if (user) {
+                    //Logged in but trying to access the login page
                     await goto("/dashboard")
                 }
             }
-            is_loading.set(false)
-
-            // isLoading = false
-            
+            is_loading.set(false)  
         });
     })
-
-    // authenticated.subscribe(value=> {
-    //     render = value
-    // })
-        // const unsubscribe = auth.onAuthStateChanged(async (user) => {
-        //     const currentPath = window.location.pathname
-        //     if (user && user.email) {
-        //         if (currentPath === '/login') window.location.href = '/dashboard'
-        //         // authStore.set({email: user.email})
-        //         // console.log(user.email)
-        //     }
-        //     else {
-        //         if (!nonAuthRoutes.includes(currentPath)) window.location.href = '/login'
-        //     }
-        //     return
-            
-            
-            
-    //     })
-    // })
 </script>
 
 
 
 <h1 id = "logo"><span id = "black">Fl</span><span id= "blue">iot</span></h1>
-<!-- {console.log("---------------")}
-{console.log(render)}
-{console.log((render === null) && $page.route.id.includes("dashboard"))}
-{console.log("---------------")} -->
-{console.log($page.route.id)}
 <div>
-
-    <!-- {#if render === undefined || (render === null && authenticated_route) || (render !== null && authenticated_route)} -->
-    {#if $is_loading || true}
+    {#if $is_loading}
         <Spinner/>
-        <!-- {browser ? goto("/login") : false}  -->
     {:else}
-
-    <slot/>
+        <slot/>
     {/if}
 
 </div>

@@ -31,7 +31,7 @@ if (getApps().length) {
 app_init = initializeApp(firebaseConfig, "CLIENT");
 
 const firebase_app = app_init;
-// const analytics = getAnalytics(firebase_app);
+// const analytics = getAnalytics(firebase_app); <- Analytics (when we implement it)
 
 //export const db = getFirestore(firebase_app) <- Database (when we implement it)
 export const auth = getAuth(firebase_app)
