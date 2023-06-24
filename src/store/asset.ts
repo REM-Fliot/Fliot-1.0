@@ -1,4 +1,3 @@
-
 export class Asset {
     constructor(name:string, id:string, sector:string) {
         this.name = name;

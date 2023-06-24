@@ -1,6 +1,6 @@
 <script>
 	import { page } from '$app/stores';
-	import { Asset_list } from '../store/store';
+	import { Asset_list } from '../store/asset';
 
 	const id = $page.params.id;
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { construct_svelte_component } from 'svelte/internal';
-	import { Asset, Asset_list } from '../store/store';
+	import { Asset, Asset_list } from '../store/asset';
 
 	let name_input = '',
 		id_input = '',
