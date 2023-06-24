@@ -1,8 +1,11 @@
-<script>
+<script lang="ts">
 	import { construct_svelte_component } from 'svelte/internal';
 
 	class Asset {
-		constructor(name, id, sector) {
+		name: string
+		id: string
+		sector: string
+		constructor(name: string, id: string, sector: string) {
 			this.name = name;
 			this.id = id;
 			this.sector = sector;

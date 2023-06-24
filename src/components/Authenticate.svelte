@@ -1,10 +1,11 @@
-<script>
-	import { authHandlers } from "../store/store";
+<script lang="ts">
+	import { authHandlers } from "../auth/auth";
 
     let email = "";
     let password = "";
     let missing_fields = false;
     let error = false;
+    let err_info = ""
     let register = false;
     let authenticating = false;
 
@@ -25,6 +26,7 @@
             }
         } catch (err) {
             console.log("There was an AUTH error: ", err)
+            err_info = <string>err
             error = true;
             authenticating = false;
         }
@@ -41,7 +43,7 @@
         {#if missing_fields}
             <p class="error">Missing Fields</p>
         {:else if error}
-            <p class="error">Incorrect Login</p>
+            <p class="error">{err_info}</p>
         {/if}
         <label>
             <input bind:value={email} type="email" placeholder="Email"/>
