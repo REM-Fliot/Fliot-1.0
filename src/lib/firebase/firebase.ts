@@ -3,6 +3,7 @@ import { getApps, getApp, deleteApp, initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, setPersistence,browserSessionPersistence } from 'firebase/auth'
 import { browser } from "$app/environment";
+import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -33,7 +34,7 @@ app_init = initializeApp(firebaseConfig, "CLIENT");
 const firebase_app = app_init;
 // const analytics = getAnalytics(firebase_app); <- Analytics (when we implement it)
 
-//export const db = getFirestore(firebase_app) <- Database (when we implement it)
+export const db = getFirestore(firebase_app) //<- Database (when we implement it)
 export const auth = getAuth(firebase_app)
 // setPersistence(auth, browserSessionPersistence)
 
