@@ -1,17 +1,18 @@
 export class Asset {
-    constructor(name:string, id:string, sector:string) {
+    constructor(name:string, id:string, sector:string, client:string) {
         this.name = name;
         this.id = id;
         this.sector = sector;
+        this.client = client;
     }
 }
 
 export const Asset_list = [
-    new Asset('Magnetic Resonance Imaging (MRI) Scanner', '598', 'Radiology'),
-    new Asset('Computed Tomography (CT) Scanner', '326', 'Radiology'),
-    new Asset('Linear Accelerator (LINAC)', '721', 'Oncology'),
-    new Asset('Positron Emission Tomography (PET) Scanner', '492', 'Nuclear Medicine'),
-    new Asset('Robotic Surgical System', '185', 'Surgery'),
-    new Asset('Gamma Camera', '622', 'Nuclear Medicine'),
-    new Asset('Lithotripsy Machine', '851', 'Urology')
+    new Asset('Magnetic Resonance Imaging (MRI) Scanner', '598', 'Radiology', '1'),
+    new Asset('Computed Tomography (CT) Scanner', '326', 'Radiology', '2'),
+    new Asset('Linear Accelerator (LINAC)', '721', 'Oncology', '1'),
+    new Asset('Positron Emission Tomography (PET) Scanner', '492', 'Nuclear Medicine', '3'),
+    new Asset('Robotic Surgical System', '185', 'Surgery','3'),
+    new Asset('Gamma Camera', '622', 'Nuclear Medicine', '3'),
+    new Asset('Lithotripsy Machine', '851', 'Urology', '2')
 ]

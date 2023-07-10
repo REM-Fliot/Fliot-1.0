@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { construct_svelte_component } from 'svelte/internal';
 	import { Asset, Asset_list } from '../store/asset';
+	import { goto } from '$app/navigation';
 
 	let name_input = '',
 		id_input = '',
 		sector_input = '';
-
-	let selected_assets = [];
 
 	let returned_items = Asset_list;
 
@@ -25,11 +24,10 @@
 							return asset.sector.toLowerCase().trim().includes(sector_input.toLowerCase().trim());
 						});
 	};
-
-	const handleAssetClick = (index) => {
-		selected_assets = !selected_assets.includes(index)
-			? [...selected_assets, index]
-			: selected_assets.filter((item) => item !== index);
+	const handleClicker = (event, id) => {
+		if (event.target.classList.contains('table-entry')) {
+			goto(`./${id}`);
+		}
 	};
 </script>
 
@@ -47,17 +45,15 @@
 			<th class="table-heading">Asset Sector</th>
 		</tr>
 		{#each returned_items as result, index}
-			<tr class="table-row" on:click={() => handleAssetClick(index)}>
+			<tr class="table-row" on:click={() => handleClicker(event, result.id)}>
 				<td class="table-entry">{result.name}</td>
 				<td class="table-entry">{result.id}</td>
 				<td class="table-entry">{result.sector}</td>
+				<td><a href={`./${result.id}/new_report`}>+ New Report</a></td>
+				<td><a href={`./${result.id}/history`}>Asset History</a></td>
+				<td><a href={`./${result.id}/attachments`}>Attachments</a></td>
+				<td><a href={`./${result.id}/customer_inquiries`}>Customer Inquiries</a></td>
 			</tr>
-			{#if selected_assets.includes(index)}
-				<div>
-					<a href={`./${result.id}/new_report`}>+ New Report</a>
-					<a href={`./${result.id}`}>View History & Files</a>
-				</div>
-			{/if}
 		{/each}
 	</table>
 </div>
