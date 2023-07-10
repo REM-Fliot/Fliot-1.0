@@ -1,6 +1,6 @@
 <script>
 	import { goto } from "$app/navigation";
-    import { reroute } from "../../utility/reroute";
+    import reroute from "../../utility/reroute";
     import Authenticate from "../../components/Authenticate.svelte";
 </script>
 

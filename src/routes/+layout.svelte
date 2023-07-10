@@ -30,9 +30,7 @@
                     await goto("/dashboard")
                 }
             }
-            console.log($auth_user)
             auth_user.set(user)
-            console.log($auth_user)
             });
         }
         
