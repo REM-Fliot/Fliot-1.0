@@ -9,6 +9,7 @@ export function load(LayoutLoadEvent) {
     // is_loading.set(true);
     // console.log(LayoutLoadEvent.route.id)
     // console.log(get(auth_user))
+    // console.log(is_authenticated)
     if (get(auth_user) === null && is_authenticated) {
         console.log("Redirected to login (not logged in)")
         throw redirect(302, "/login")

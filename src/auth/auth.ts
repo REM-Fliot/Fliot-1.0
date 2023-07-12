@@ -15,7 +15,7 @@ export const authHandlers = {
             // }
             
             
-            // auth_user.set(user_credentials.user)  //Dont think this should be set here    
+            auth_user.set(user_credentials.user)  //Dont think this should be set here    
             await goto("/dashboard")
         }).catch((err)=>{
             console.log(err)
@@ -24,7 +24,7 @@ export const authHandlers = {
     login: async (email: string, pass:string) => {
         await signInWithEmailAndPassword(auth, email, pass).then(
             async (user_credentials)=>{
-                // auth_user.set(user_credentials.user)
+                auth_user.set(user_credentials.user)
                 await goto("/dashboard")
             }
         ).catch((err)=>{

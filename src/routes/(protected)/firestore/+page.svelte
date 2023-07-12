@@ -21,7 +21,6 @@
     onMount(()=>{
         global_modifying = false
     })
-
     const handleSubmit = async () => {
         console.log(asset_name_post,client_name_post,date_post)
         await addDoc(col_ref, {
@@ -56,9 +55,9 @@
             CLIENT_NAME: client_name_update,
             DATE: date_update
         })
+        await invalidateAll()
         asset.is_modifying=false
         global_modifying = false;
-        await invalidateAll()
     }
 
 </script>
