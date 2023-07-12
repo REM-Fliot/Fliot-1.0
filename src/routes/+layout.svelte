@@ -1,11 +1,11 @@
-<script lang = "ts">
-    import { onMount } from 'svelte'
-    import { auth } from '../lib/firebase/firebase'
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import { auth } from '../lib/firebase/firebase';
 	import { onAuthStateChanged } from 'firebase/auth';
 	import { goto } from '$app/navigation';
-    import { page } from '$app/stores';  
+	import { page } from '$app/stores';
 	import Spinner from '../components/Spinner.svelte';
-    import { auth_user} from '../store/authUser';
+  import { auth_user} from '../store/authUser';
 
     
     //All routes under the (protected) folder
@@ -37,31 +37,10 @@
     })
 </script>
 
-
-
-<h1 id = "logo"><span id = "black">Fl</span><span id= "blue">iot</span></h1>
 <div>
     {#if $auth_user === undefined}
         <Spinner/>
     {:else}
         <slot/>
     {/if}
-
 </div>
-
-<style>
-    @font-face {
-        src: url(fonts/Raleway/Raleway-VariableFont_wght.ttf);
-        font-family: raleway;
-    }
-    #logo {
-        font-family: raleway;
-        font-size: 8rem;
-        padding: 0rem;
-        text-align: center;
-    }
-    #blue { 
-        color: #34ace0;
-    }
-
-</style>
