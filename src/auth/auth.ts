@@ -8,11 +8,11 @@ import { addDoc, collection, doc, setDoc } from "firebase/firestore/lite";
 export const authHandlers = {
     signup: async (email: string, pass:string) => {
         await createUserWithEmailAndPassword(auth, email, pass).then(async (user_credentials)=>{
-            const id = getAuth().currentUser?.uid
-            if (id) {
-                const ref = doc(db,"users",id)
-                await setDoc(ref, [])
-            }
+            // const id = getAuth().currentUser?.uid
+            // if (id) {
+            //     const ref = doc(db,"users",id)
+            //     await setDoc(ref, [])
+            // }
             
             
             // auth_user.set(user_credentials.user)  //Dont think this should be set here    

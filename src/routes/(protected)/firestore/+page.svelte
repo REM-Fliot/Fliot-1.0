@@ -56,14 +56,13 @@
             CLIENT_NAME: client_name_update,
             DATE: date_update
         })
-        
-        await invalidateAll()
         asset.is_modifying=false
         global_modifying = false;
+        await invalidateAll()
     }
 
 </script>
-<a data-sveltekit-preload-data="hover" href="/dashboard"><button>Go back to dashboard</button></a>
+<button on:click={async ()=>{await goto("dashboard")}}>Go back to dashboard</button>
 <h1>Welcome, {$auth_user?.email}</h1>
 <h2>New asset registrations</h2>
 <form on:submit={handleSubmit}>
