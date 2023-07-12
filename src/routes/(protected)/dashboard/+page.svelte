@@ -10,5 +10,4 @@
 
 <SearchFeature/>
 
-<button on:click={async ()=>{await goto("/firestore")}}>Go to firestore access page</button>
-<button></button>
+<a data-sveltekit-preload-data="hover" href="/firestore"><button>Go to firestore access page</button></a>
