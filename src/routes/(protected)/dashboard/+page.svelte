@@ -8,6 +8,8 @@
 
 <button on:click={authHandlers.logout}>LOGOUT</button>
 
-<SearchFeature/>
+<div>
+    Dashboard
+</div>
 
 <a data-sveltekit-preload-data="hover" href="/firestore"><button>Go to firestore access page</button></a>
