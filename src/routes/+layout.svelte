@@ -5,35 +5,42 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Spinner from '../components/Spinner.svelte';
-	import { is_loading } from '../store/authUser';
+  import { auth_user} from '../store/authUser';
 
-	//All routes under the (protected) folder
-	let protected_route = $page.route.id?.startsWith('/(protected)');
+    
+    //All routes under the (protected) folder
+    let protected_route = $page.route.id?.startsWith("/(protected)")
+    
+    //onMount = immediately when the page renders
+    onMount(() => {
+        if ($auth_user === undefined) {
+            onAuthStateChanged(auth, async (user) => {
+            //onAuthStateChanged = when the user variable is resolve - either it is null (not signed in), or User object.
 
-	//onMount = immediately when the page renders
-	onMount(() => {
-		onAuthStateChanged(auth, async (user) => {
-			//onAuthStateChanged = when the user variable is resolve - either it is null (not signed in), or User object.
-			if (protected_route) {
-				if (!user) {
-					//Not logged in but trying to access protected routes
-					await goto('/login');
-				}
-			} else {
-				if (user) {
-					//Logged in but trying to access the login page
-					await goto('/dashboard');
-				}
-			}
-			is_loading.set(false);
-		});
-	});
+            
+            if (protected_route) {
+                if (!user) {
+                    //Not logged in but trying to access protected routes
+                    await goto("/login")
+                }
+            }
+            else {
+                if (user) {
+                    //Logged in but trying to access the login page
+                    await goto("/dashboard")
+                }
+            }
+            auth_user.set(user)
+            });
+        }
+        
+    })
 </script>
 
 <div>
-	{#if $is_loading}
-		<Spinner />
-	{:else}
-		<slot />
-	{/if}
+    {#if $auth_user === undefined}
+        <Spinner/>
+    {:else}
+        <slot/>
+    {/if}
 </div>
