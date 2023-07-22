@@ -6,7 +6,7 @@
 
 </script>
 
-<button on:click={authHandlers.logout}>LOGOUT</button>
+<!-- <button on:click={authHandlers.logout}>LOGOUT</button> -->
 
 <SearchFeature/>
 

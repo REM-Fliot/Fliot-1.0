@@ -8,7 +8,6 @@ import fetchAssets from "../../../utility/fetch_assets";
 /** @type {import('./$types').PageLoad} */
 export const load = async () => {
     let assets = await fetchAssets();
-    
     return {
         assets
     };

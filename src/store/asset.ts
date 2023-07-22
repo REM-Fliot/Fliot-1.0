@@ -1,4 +1,8 @@
 export class Asset {
+    name: string;
+    id: string;
+    sector: string;
+    client: string;
     constructor(name:string, id:string, sector:string, client:string) {
         this.name = name;
         this.id = id;
