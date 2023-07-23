@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { clientAuthHandlers } from '../auth/auth';
+	import { serverAuthHandlers } from '../../../auth/auth.server';
 
-	let name = '';
 	let email = '';
 	let password = '';
 	let missing_fields = false;
@@ -20,20 +19,13 @@
 		authenticating = true;
 		//Have the required information
 		try {
-			if (!register) {
-				await clientAuthHandlers.login(email, password);
-			} else {
-				await clientAuthHandlers.addCompany(email, password, name);
-			}
+			await serverAuthHandlers.addTechnician(email,password)
 		} catch (err) {
 			console.log('There was an AUTH error: ', err);
 			err_info = <string>err;
 			error = true;
 			authenticating = false;
 		}
-	}
-	function toggleRegister() {
-		register = !register;
 	}
 </script>
 
@@ -44,11 +36,6 @@
 			<p class="error">Missing Fields</p>
 		{:else if error}
 			<p class="error">{err_info}</p>
-		{/if}
-		{#if register}
-			<label>
-				<input bind:value={name} type="text" placeholder="Company Name" />
-			</label>
 		{/if}
 		<label>
 			<input bind:value={email} type="email" placeholder="Email" />
@@ -63,26 +50,6 @@
 			<button id="submit" type="submit"> Submit </button>
 		{/if}
 	</form>
-	<div class="options">
-		<p>Or</p>
-		{#if register}
-			<div>
-				<p>
-					<span>Already have an account?</span>
-					<span>&nbsp;</span>
-					<span on:click={toggleRegister} on:keydown={() => {}}>Login</span>
-				</p>
-			</div>
-		{:else}
-			<div>
-				<p>
-					<span>Don't have an account?</span>
-					<span>&nbsp;</span>
-					<span on:click={toggleRegister} on:keydown={() => {}}>Register</span>
-				</p>
-			</div>
-		{/if}
-	</div>
 </div>
 
 <style>
@@ -145,15 +112,6 @@
 		border-style: solid;
 		transition-duration: 0.25s;
 		padding: 0.2rem;
-		cursor: pointer;
-	}
-
-	.options {
-		text-align: center;
-	}
-	.options p:last-child span:last-child:hover {
-		color: #34ace0;
-		text-decoration: underline;
 		cursor: pointer;
 	}
 	.error {

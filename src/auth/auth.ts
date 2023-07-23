@@ -5,20 +5,29 @@ import type { User } from "firebase/auth";
 import { auth_user } from "../store/authUser";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore/lite";
 
-export const authHandlers = {
-    signup: async (email: string, pass:string) => {
+
+
+export const clientAuthHandlers = {
+    addCompany: async (email: string, pass:string, company_name: string) => {
         await createUserWithEmailAndPassword(auth, email, pass).then(async (user_credentials)=>{
-            // const id = getAuth().currentUser?.uid
-            // if (id) {
-            //     const ref = doc(db,"users",id)
-            //     await setDoc(ref, [])
-            // }
+            let email = user_credentials.user.email
+                await addDoc(collection(db, "companies", company_name,"assets"), {
+                    ASSET_NAME: "PLACEHOLDER",
+                    CLIENT_NAME: "PLACEHOLDER",
+                    DATE: "PLACEHOLDER"
+                });
+                await setDoc(doc(db, "companies", company_name,"employees",user_credentials.user.uid), {
+                    email: user_credentials.user.email,
+                    admin: true
+                });
+                
             
             
             auth_user.set(user_credentials.user)  //Dont think this should be set here    
             await goto("/dashboard")
         }).catch((err)=>{
             console.log(err)
+            throw err
         })
     },
     login: async (email: string, pass:string) => {
