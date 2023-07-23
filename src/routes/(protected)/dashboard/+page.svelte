@@ -7,7 +7,12 @@
 
 </script>
 
-<SearchFeature/>
+<button on:click={clientAuthHandlers.logout}>LOGOUT</button>
+
+<div>
+    Dashboard
+</div>
 
 <a data-sveltekit-preload-data="hover" href="/firestore"><button>Go to firestore access page</button></a>
 <a data-sveltekit-preload-data="hover" href="/add-technician"><button>Add a new technician</button></a>
+<a data-sveltekit-preload-data="hover" href="/serviced_assets"><button>Search serviced assets</button></a>

@@ -1,37 +1,52 @@
 <script lang="ts">
-	import { serverAuthHandlers } from '../../../auth/auth.server';
+	import { doc, setDoc } from 'firebase/firestore/lite';
+	import { auth_user } from '../../../store/authUser';
+	import { db } from '$lib/firebase/firebase';
 
 	let email = '';
 	let password = '';
 	let missing_fields = false;
 	let error = false;
-	let err_info = '';
-	let register = false;
+	let err_info = false;
 	let authenticating = false;
 
 	async function handleAuthenticate(event) {
 		event.preventDefault();
 		if (authenticating) return;
-		if (!email || (!password && !register)) {
+		if (!email || (!password)) {
 			missing_fields = true;
 			return;
 		}
 		authenticating = true;
-		//Have the required information
-		try {
-			await serverAuthHandlers.addTechnician(email,password)
-		} catch (err) {
-			console.log('There was an AUTH error: ', err);
-			err_info = <string>err;
+		// //Have the required information
+		const response = await fetch('api/add-technician', {
+			method: 'POST',
+			body: JSON.stringify({ email: email, pass: password, uid: $auth_user?.user.uid }),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		if (!response.ok) {
+			console.log(response.status, response.statusText);
 			error = true;
 			authenticating = false;
 		}
+		const {uid} = await response.json()
+		const company_name = $auth_user!.company //MIGHT BE BAD (null assertion)
+		console.log(company_name,uid)
+		await setDoc(doc(db, "companies", company_name, "employees", uid), {
+			email: email,
+		});
+		await setDoc(doc(db, "users", uid), {
+			email: email,
+			company: company_name
+		});
 	}
 </script>
 
 <div class="authContainer">
 	<form on:submit={handleAuthenticate}>
-		<h2 id="login-title">{register ? 'Register' : 'Login'}</h2>
+		<h2 id="login-title">Add New Technician</h2>
 		{#if missing_fields}
 			<p class="error">Missing Fields</p>
 		{:else if error}

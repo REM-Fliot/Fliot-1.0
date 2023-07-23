@@ -3,27 +3,25 @@
 	import { Asset, Asset_list } from '../store/asset';
 	import { goto } from '$app/navigation';
 
-	let name_input = '',
-		id_input = '',
-		sector_input = '';
+	let user_input = '';
 
 	let returned_items = Asset_list;
 
-	const updateResults = (event) => {
-		event.preventDefault();
+	$: {
 		returned_items =
-			name_input.trim() === '' && id_input === '' && sector_input === ''
+			user_input.trim() === ''
 				? Asset_list
-				: Asset_list.filter((asset) =>
-						asset.name.toLowerCase().trim().includes(name_input.toLowerCase().trim())
-				  )
-						.filter((asset) =>
-							asset.id.toLowerCase().trim().includes(id_input.toLowerCase().trim())
-						)
-						.filter((asset) => {
-							return asset.sector.toLowerCase().trim().includes(sector_input.toLowerCase().trim());
-						});
-	};
+				: Asset_list.filter((asset) => {
+						const input_lowercase = user_input.toLowerCase().trim();
+						return (
+							asset.name.toLowerCase().trim().includes(input_lowercase) ||
+							asset.id.toLowerCase().trim().includes(input_lowercase) ||
+							asset.location.toLowerCase().trim().includes(input_lowercase) ||
+							asset.client.toLowerCase().trim().includes(input_lowercase)
+						);
+				  });
+	}
+
 	const handleClicker = (event, id) => {
 		if (event.target.classList.contains('table-entry')) {
 			goto(`./${id}`);
@@ -32,26 +30,24 @@
 </script>
 
 <div>
-	<form on:submit={updateResults}>
-		<input placeholder="Search by Name" bind:value={name_input} />
-		<input placeholder="Search by ID" bind:value={id_input} />
-		<input placeholder="Search by Sector" bind:value={sector_input} />
-		<button type="submit">Search</button>
+	<form>
+		<input placeholder="Search by client, asset, location" bind:value={user_input} />
 	</form>
 	<table class="returned-results">
 		<tr>
 			<th class="table-heading">Asset Name</th>
 			<th class="table-heading">Asset ID</th>
-			<th class="table-heading">Asset Sector</th>
+			<th class="table-heading">Client Name</th>
+			<th class="table-heading">Asset Location</th>
 		</tr>
 		{#each returned_items as result, index}
 			<tr class="table-row" on:click={() => handleClicker(event, result.id)}>
 				<td class="table-entry">{result.name}</td>
 				<td class="table-entry">{result.id}</td>
-				<td class="table-entry">{result.sector}</td>
+				<td class="table-entry">{result.client}</td>
+				<td class="table-entry">{result.location}</td>
 				<td><a href={`./${result.id}/new_report`}>+ New Report</a></td>
 				<td><a href={`./${result.id}/history`}>Asset History</a></td>
-				<td><a href={`./${result.id}/attachments`}>Attachments</a></td>
 				<td><a href={`./${result.id}/customer_inquiries`}>Customer Inquiries</a></td>
 			</tr>
 		{/each}
@@ -68,11 +64,14 @@
 		padding-bottom: 5px;
 	}
 	.table-entry {
-		margin-left: 20px;
-		padding-right: 50px;
+		margin-left: 100px;
+		padding-right: 100px;
 	}
 	.table-row:hover {
 		background-color: aqua;
 		cursor: pointer;
+	}
+	input {
+		width: 400px;
 	}
 </style>

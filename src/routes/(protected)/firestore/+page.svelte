@@ -9,7 +9,7 @@
     export let data
     $: assets = data.assets
     let global_modifying: boolean;
-    const col_ref = collection(db,"data")
+    const col_ref = collection(db,"assets")
     //---BINDED---
     let asset_name_post:string
     let client_name_post:string
@@ -38,7 +38,7 @@
     }
 
     const handleDelete = async (asset_id:string) => {
-        await deleteDoc(doc(db,"data",asset_id))
+        await deleteDoc(doc(db,"assets",asset_id))
         await invalidateAll()
     }
     const handleModify = async(asset:QueryDocumentSnapshot<DocumentData>)=>{
@@ -50,7 +50,7 @@
         global_modifying = true;
     }
     const handleUpdate = async(asset:QueryDocumentSnapshot<DocumentData>) => {
-        await updateDoc(doc(db,"data",asset.id), {
+        await updateDoc(doc(db,"assets",asset.id), {
             ASSET_NAME: asset_name_update,
             CLIENT_NAME: client_name_update,
             DATE: date_update
@@ -58,11 +58,12 @@
         await invalidateAll()
         asset.is_modifying=false
         global_modifying = false;
+        $auth_user?.user.email
     }
 
 </script>
 <button on:click={async ()=>{await goto("dashboard")}}>Go back to dashboard</button>
-<h1>Welcome, {$auth_user?.email}</h1>
+<h1>Welcome, {$auth_user?.user.email}</h1>
 <h2>New asset registrations</h2>
 <form on:submit={handleSubmit}>
     <label>Asset name: <input type = "text" placeholder = "Asset name" bind:value={asset_name_post}></label>

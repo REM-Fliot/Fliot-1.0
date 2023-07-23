@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { clientAuthHandlers } from '../auth/auth';
+	import { creating_company } from '../store/authUser';
 
 	let name = '';
 	let email = '';
@@ -23,7 +24,9 @@
 			if (!register) {
 				await clientAuthHandlers.login(email, password);
 			} else {
+				creating_company.set(true)
 				await clientAuthHandlers.addCompany(email, password, name);
+				creating_company.set(false)
 			}
 		} catch (err) {
 			console.log('There was an AUTH error: ', err);

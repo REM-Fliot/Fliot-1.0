@@ -4,7 +4,7 @@ import { QueryDocumentSnapshot, collection, getDocs, type DocumentData } from "f
 const fetchAssets = async () => {
     let assets:Array<QueryDocumentSnapshot<DocumentData>> = []
 
-    const col_ref = collection(db,"data")
+    const col_ref = collection(db,"assets")
     await getDocs(col_ref).then(snapshot=>{
         snapshot.docs.forEach((doc)=>{
             assets.push(doc);
