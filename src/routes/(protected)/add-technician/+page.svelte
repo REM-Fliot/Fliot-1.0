@@ -4,13 +4,15 @@
 	import { db } from '$lib/firebase/firebase';
 
 	let email = '';
+	let username = '';
 	let password = '';
 	let missing_fields = false;
 	let error = false;
-	let err_info = false;
+	let err_info = '';
 	let authenticating = false;
+	let success = false;
 
-	async function handleAuthenticate(event) {
+	async function handleAuthenticate(event: any) {
 		event.preventDefault();
 		if (authenticating) return;
 		if (!email || (!password)) {
@@ -21,7 +23,7 @@
 		// //Have the required information
 		const response = await fetch('api/add-technician', {
 			method: 'POST',
-			body: JSON.stringify({ email: email, pass: password, uid: $auth_user?.user.uid }),
+			body: JSON.stringify({ email: email, pass: password, username: username, uid: $auth_user?.user.uid }),
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -30,17 +32,24 @@
 			console.log(response.status, response.statusText);
 			error = true;
 			authenticating = false;
+			err_info = response.statusText
 		}
-		const {uid} = await response.json()
+		const uid = await response.text()
 		const company_name = $auth_user!.company //MIGHT BE BAD (null assertion)
-		console.log(company_name,uid)
 		await setDoc(doc(db, "companies", company_name, "employees", uid), {
-			email: email,
+			EMAIL: email,
+			USERNAME: username
 		});
 		await setDoc(doc(db, "users", uid), {
-			email: email,
-			company: company_name
+			EMAIL: email,
+			COMPANY: company_name
 		});
+		authenticating = false
+		error = false;
+		email = ''
+		username= ''
+		password = ''
+		success = true;
 	}
 </script>
 
@@ -53,6 +62,9 @@
 			<p class="error">{err_info}</p>
 		{/if}
 		<label>
+			<input bind:value={username} type="text" placeholder="Name" />
+		</label>
+		<label>
 			<input bind:value={email} type="email" placeholder="Email" />
 		</label>
 		<label>
@@ -64,6 +76,9 @@
 		{:else}
 			<button id="submit" type="submit"> Submit </button>
 		{/if}
+		{#if success}
+			<span id="success">User successfully added!</span>
+		{/if}
 	</form>
 </div>
 
@@ -71,6 +86,9 @@
 	@font-face {
 		src: url(fonts/Lato/Lato-Regular.ttf);
 		font-family: lato;
+	}
+	#success {
+		color: green
 	}
 	.authContainer {
 		display: flex;

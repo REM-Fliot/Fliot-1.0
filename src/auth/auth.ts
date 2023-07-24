@@ -20,11 +20,12 @@ export const clientAuthHandlers = {
             });
             // auth.set
             await setDoc(doc(db, "companies", company_name,"employees",user_credentials.user.uid), {
-                email: user_credentials.user.email,
+                EMAIL: user_credentials.user.email,
+                USERNAME: "ADMIN"
             });
             await setDoc(doc(db, "users", user_credentials.user.uid), {
-                email: email,
-                company: company_name
+                EMAIL: email,
+                COMPANY: company_name
             });
             
             

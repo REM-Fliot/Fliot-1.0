@@ -8,11 +8,11 @@
   import { auth_user, creating_company} from '../store/authUser';
 	import { collection, doc, getDoc } from 'firebase/firestore/lite';
 	import { browser } from '$app/environment';
+	import { error } from '@sveltejs/kit';
 
     
     //All routes under the (protected) folder
     let protected_route = $page.route.id?.startsWith("/(protected)")
-    
     //onMount = immediately when the page renders
     // onMount(() => {
             onAuthStateChanged(auth, async (user) => {
@@ -33,18 +33,23 @@
                     }
                     
                     if (user) {
-                        
+                        // console.log("hello")
                         let company
                         const col_ref = doc(db, "users", user.uid)
                         await getDoc(col_ref).then(snapshot=>{
                             if (snapshot.exists()) {
-                                company = snapshot.data()?.company
+                                company = snapshot.data()?.COMPANY
+                                console.log(company,"here")
+                                
                                 if (company) {
                                     auth_user.set({user: user, company: company})
                                 }
+                                else {
+                                    throw error(400,"No company exists for this user")
+                                }
                             }
                             else {
-                                console.log("No user exists with that id")
+                                throw error(400,"No user exists with that id")
                             }
                         })
                         

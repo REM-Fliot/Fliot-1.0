@@ -7,9 +7,10 @@
 	import { onMount } from "svelte";
 
     export let data
+    const company = data.company
     $: assets = data.assets
     let global_modifying: boolean;
-    const col_ref = collection(db,"assets")
+    const col_ref = collection(db,"companies", company, "assets")
     //---BINDED---
     let asset_name_post:string
     let client_name_post:string
@@ -22,7 +23,6 @@
         global_modifying = false
     })
     const handleSubmit = async () => {
-        console.log(asset_name_post,client_name_post,date_post)
         await addDoc(col_ref, {
             ASSET_NAME: asset_name_post,
             CLIENT_NAME: client_name_post,
@@ -36,9 +36,8 @@
         })
 
     }
-
     const handleDelete = async (asset_id:string) => {
-        await deleteDoc(doc(db,"assets",asset_id))
+        await deleteDoc(doc(db,"companies", company, "assets",asset_id))
         await invalidateAll()
     }
     const handleModify = async(asset:QueryDocumentSnapshot<DocumentData>)=>{
@@ -50,7 +49,7 @@
         global_modifying = true;
     }
     const handleUpdate = async(asset:QueryDocumentSnapshot<DocumentData>) => {
-        await updateDoc(doc(db,"assets",asset.id), {
+        await updateDoc(doc(db,"companies", company,"assets",asset.id), {
             ASSET_NAME: asset_name_update,
             CLIENT_NAME: client_name_update,
             DATE: date_update
@@ -58,11 +57,9 @@
         await invalidateAll()
         asset.is_modifying=false
         global_modifying = false;
-        $auth_user?.user.email
     }
 
 </script>
-<button on:click={async ()=>{await goto("dashboard")}}>Go back to dashboard</button>
 <h1>Welcome, {$auth_user?.user.email}</h1>
 <h2>New asset registrations</h2>
 <form on:submit={handleSubmit}>
