@@ -1,7 +1,7 @@
 //FOR BACKEND
 
 import admin, { initializeApp } from "firebase-admin"
-import * as credential from "./fliot-authentication-firebase-adminsdk-d1e7c-a7220b3e58.json"
+import * as credential from "./fliot-authentication-firebase-adminsdk-d1e7c-428ef94945.json"
 
 const fliot_admin = initializeApp({
     credential: admin.credential.cert(JSON.parse(JSON.stringify(credential)))

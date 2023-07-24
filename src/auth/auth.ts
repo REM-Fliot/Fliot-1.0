@@ -21,7 +21,8 @@ export const clientAuthHandlers = {
             // auth.set
             await setDoc(doc(db, "companies", company_name,"employees",user_credentials.user.uid), {
                 EMAIL: user_credentials.user.email,
-                USERNAME: "ADMIN"
+                USERNAME: "ADMIN",
+                ADMIN: true
             });
             await setDoc(doc(db, "users", user_credentials.user.uid), {
                 EMAIL: email,
@@ -59,8 +60,10 @@ export const clientAuthHandlers = {
     },
     logout: async () => {
         await signOut(auth).then(async ()=>{
+            
             auth_user.set(null)
             await goto("/login")
+            
         }).catch((err)=>{
             console.log(err)
         })

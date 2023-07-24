@@ -1,19 +1,25 @@
 import { get } from "svelte/store";
-import { auth_user } from "../../../store/authUser";
 import {fetchAssets} from "../../../utility/fetch_data";
-import { error } from '@sveltejs/kit';
 import type { PageLoad } from "./$types";
+import { error } from '@sveltejs/kit';
+import { auth_user} from "../../../store/authUser";
+import { auth } from "$lib/firebase/firebase";
+import type { DocumentData, QueryDocumentSnapshot } from "firebase/firestore/lite";
 
 export const load: PageLoad = async () => {
-
     const company = get(auth_user)?.company
 
-    if (!company) throw error(400, "No company associated with this account")
+    let loaded = false;
+    let assets: QueryDocumentSnapshot<DocumentData>[] = []
 
-    const assets = await fetchAssets(company);
-
+    if (company) {
+        assets = await fetchAssets(company);
+        loaded = true
+    }
+    
     return {
         assets: assets,
-        company: company
+        loaded: loaded
+
     };
 }

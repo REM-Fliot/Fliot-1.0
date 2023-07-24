@@ -38,11 +38,12 @@
 		const company_name = $auth_user!.company //MIGHT BE BAD (null assertion)
 		await setDoc(doc(db, "companies", company_name, "employees", uid), {
 			EMAIL: email,
-			USERNAME: username
+			USERNAME: username,
+			ADMIN: false
 		});
 		await setDoc(doc(db, "users", uid), {
 			EMAIL: email,
-			COMPANY: company_name
+			COMPANY: company_name,
 		});
 		authenticating = false
 		error = false;

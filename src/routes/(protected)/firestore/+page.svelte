@@ -3,14 +3,18 @@
 	import { auth_user } from "../../../store/authUser";
 	import { auth, db } from "$lib/firebase/firebase";
     import { goto, invalidateAll } from "$app/navigation";
-    import type { DocumentData, QueryDocumentSnapshot } from "firebase/firestore/lite";
+    import type { CollectionReference, DocumentData, QueryDocumentSnapshot } from "firebase/firestore/lite";
 	import { onMount } from "svelte";
+	import Spinner from "../../../components/Spinner.svelte";
 
     export let data
-    const company = data.company
+    $: loaded = data.loaded
     $: assets = data.assets
+
+    const company = $auth_user!.company
+
+    
     let global_modifying: boolean;
-    const col_ref = collection(db,"companies", company, "assets")
     //---BINDED---
     let asset_name_post:string
     let client_name_post:string
@@ -18,8 +22,17 @@
     let asset_name_update:string
     let client_name_update:string
     let date_update: Date | null
+    let col_ref: CollectionReference<DocumentData>
+    col_ref = collection(db,"companies", company, "assets")
 
-    onMount(()=>{
+    onMount(async ()=>{
+        
+        if (!loaded) {
+            await invalidateAll()
+        }
+        else {
+            col_ref = collection(db,"companies", company, "assets")
+        }
         global_modifying = false
     })
     const handleSubmit = async () => {
@@ -72,6 +85,9 @@
     <button>Assign</button>
 </form>
 <h1>Registered Assets</h1>
+{#if !loaded}
+    <Spinner/>
+{:else}
 {#each assets as asset}
     <div class="asset">
         {#if asset.is_modifying}
@@ -97,6 +113,9 @@
         
     </div>
 {/each}
+{/if}
+
+
 
 <style>
     .asset {

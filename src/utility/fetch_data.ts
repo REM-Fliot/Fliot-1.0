@@ -26,3 +26,5 @@ export const fetchEmployees = async (company: string) => {
     return employees
 }
 
+// export const getCompany()
+

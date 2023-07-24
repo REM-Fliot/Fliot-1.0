@@ -1,28 +1,45 @@
-<!-- <script lang="ts">
+<script lang="ts">
 	import {addDoc, deleteDoc, collection, doc, updateDoc} from "firebase/firestore/lite";
 	import { auth_user } from "../../../store/authUser";
 	import { auth, db } from "$lib/firebase/firebase";
     import { goto, invalidateAll } from "$app/navigation";
-    import type { DocumentData, QueryDocumentSnapshot } from "firebase/firestore/lite";
+    import type { CollectionReference, DocumentData, QueryDocumentSnapshot } from "firebase/firestore/lite";
 	import { onMount } from "svelte";
 	import type { PageData } from "./$types";
+	import Spinner from "../../../components/Spinner.svelte";
 
     export let data
-    const company = data.company
+    const company = $auth_user!.company
+    $: loaded = data.loaded
     $: employees = data.employees
-    console.log(employees)
     let global_modifying: boolean;
-    const col_ref = collection(db,"companies", company,"employees")
+    let col_ref: CollectionReference<DocumentData>
     //---BINDED---
     let username_update:string
 
-    onMount(()=>{
+    onMount(async ()=>{
+        if (!loaded) {
+            await invalidateAll()
+        }
+        else {
+            col_ref = collection(db,"companies", company, "assets")
+        }
         global_modifying = false
     })
 
     const handleDelete = async (uid:string) => {
-        await deleteDoc(doc(db,"companies", company,"employees",uid))
+        await deleteDoc(doc(db,"companies", company as string,"employees",uid))
         await invalidateAll()
+        const response = await fetch('api/delete-user', {
+			method: 'POST',
+			body: JSON.stringify({uid: uid }),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		if (!response.ok) {
+			console.log(response.status, response.statusText);
+		}
     }
     const handleModify = async(employee:QueryDocumentSnapshot<DocumentData>)=>{
         const data = employee.data()
@@ -31,7 +48,7 @@
         global_modifying = true;
     }
     const handleUpdate = async(employee:QueryDocumentSnapshot<DocumentData>) => {
-        await updateDoc(doc(db,"companies", company,"employees",employee.id), {
+        await updateDoc(doc(db,"companies", company as string,"employees",employee.id), {
             USERNAME: username_update
         })
         await invalidateAll()
@@ -41,7 +58,10 @@
 
 </script>
 <h1>{company}'s employees</h1>
-{#each employees as employee}
+{#if !loaded}
+    <Spinner/>
+{:else}
+    {#each employees as employee}
     <div class="employee">
         {#if employee.is_modifying}
             <form on:submit={()=>{handleUpdate(employee)}}>
@@ -52,14 +72,19 @@
             <div>Name: {employee.data().USERNAME} </div> 
         {/if}
         <div>Email: {employee.data().EMAIL}</div>
+        {#if !employee.data().ADMIN}
         <button on:click={()=>handleDelete(employee.id)}>Delete</button>
-        {#if !global_modifying}
-            <button on:click={()=>handleModify(employee)}>Modify</button>
+            
+            {#if !global_modifying}
+                <button on:click={()=>handleModify(employee)}>Modify</button>
+            {/if}
         {/if}
 
         
     </div>
-{/each}
+    {/each}
+{/if}
+
 
 <style>
     .employee {
@@ -67,4 +92,4 @@
         padding: 0.25rem;
         /* border: 3px solid black; */
     }
-</style> -->
+</style>
