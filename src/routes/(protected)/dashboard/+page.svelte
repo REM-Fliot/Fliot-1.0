@@ -6,10 +6,12 @@
 
 </script>
 
-<button on:click={authHandlers.logout}>LOGOUT</button>
 
 <div>
     Dashboard
+	<div>
+		<a data-sveltekit-preload-data="hover" href="/serviced_assets">Serviced Assets</a>
+	</div>
 </div>
 
 <a data-sveltekit-preload-data="hover" href="/firestore"><button>Go to firestore access page</button></a>

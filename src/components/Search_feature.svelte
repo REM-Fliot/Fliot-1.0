@@ -1,21 +1,32 @@
 <script lang="ts">
 	import { construct_svelte_component } from 'svelte/internal';
-	import { Asset, Asset_list } from '../store/asset';
+	import { Asset, Asset_list, FetchData } from '../store/asset';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	let user_input = '';
 
-	let returned_items = Asset_list;
+	onMount(() => {
+		// FetchData();
+		// console.log($Asset_list)
+	})
+	
+	let asset_list_copy
+	Asset_list.subscribe((value) => {
+		asset_list_copy = value;
+	})
 
+	let returned_items = asset_list_copy;
+	
 	$: {
 		returned_items =
 			user_input.trim() === ''
-				? Asset_list
-				: Asset_list.filter((asset) => {
+				? asset_list_copy
+				: asset_list_copy.filter((asset) => {
 						const input_lowercase = user_input.toLowerCase().trim();
 						return (
 							asset.name.toLowerCase().trim().includes(input_lowercase) ||
-							asset.id.toLowerCase().trim().includes(input_lowercase) ||
+							asset.id.toString().toLowerCase().trim().includes(input_lowercase) ||
 							asset.location.toLowerCase().trim().includes(input_lowercase) ||
 							asset.client.toLowerCase().trim().includes(input_lowercase)
 						);
