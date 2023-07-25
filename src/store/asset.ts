@@ -1,25 +1,36 @@
-import fetchAssets from "../utility/fetch_assets";
+import {fetchAssets} from "../utility/fetch_data";
 import data from "../routes/(protected)/firestore/+page.svelte"
 import { onMount } from "svelte";
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
+import { auth_user } from "./authUser";
+import { error } from "@sveltejs/kit";
 
 /** @type {import('./$types').PageLoad} */
 export const FetchData = async () => {
-    let assets
-    let asset_list_temp = []
-    assets = await fetchAssets();
-    // console.log("here: ", assets[0].data().ASSET_NAME)
-    for(let i = 0; i < assets.length; i++){
-        const asset = assets[i].data()
-        asset_list_temp.push(new Asset(asset.ASSET_NAME, asset.ASSET_ID, asset.CLIENT_NAME, asset.ASSET_LOCATION))
-    }
-    Asset_list.set(asset_list_temp);
+    // let assets
+    // const company = get(auth_user)?.company
+    // console.log(company)
+    // if (!company) throw error(400,"No company defined")
+
+    // let asset_list_temp: Asset[] = []
+    // assets = await fetchAssets(company);
+    // // console.log("here: ", assets[0].data().ASSET_NAME)
+    // for(let i = 0; i < assets.length; i++){
+    //     const asset = assets[i].data()
+
+    //     asset_list_temp.push(new Asset(asset.ASSET_NAME, asset.ASSET_ID, asset.CLIENT_NAME, asset.ASSET_LOCATION))
+    // }
+    // Asset_list.set(asset_list_temp);
     // return {
     //     asset_list_temp
     // };
 }
 
 export class Asset {
+    name: string;
+    id: number;
+    client: string;
+    location: string;
     constructor(name:string, id:number, client:string, location:string) {
         this.name = name;
         this.id = id;
@@ -32,7 +43,7 @@ export class Asset {
 // export let Asset_list = writable([]);
 
 export let Asset_list = writable([])
-FetchData()
+// FetchData()
 // console.log($Asset_list)
 
 
