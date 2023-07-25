@@ -1,12 +1,21 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
 	import { Asset_list } from '../store/asset';
+
+	export let data
+	let red = data.red
 
 	const id = $page.params.id;
 
 	const current_asset = Asset_list.find((asset) => asset.id === id);
-	const name = current_asset.name;
-	const sector = current_asset.sector;
+	let name:string
+	let sector:string
+	if (current_asset) {
+	
+		name = current_asset.name;
+		sector = current_asset.sector;
+	}
+	
 
 	let reportText = '';
 
@@ -14,7 +23,7 @@
 		alert(`report submitted: ${reportText}`);
 	};
 </script>
-
+<h1>{red}</h1>
 {#if current_asset}
 	<table>
 		<tr>

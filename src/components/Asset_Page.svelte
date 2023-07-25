@@ -4,6 +4,10 @@
 	import { goto } from '$app/navigation';
 	import AddPicture from './Add_Picture.svelte';
 
+	export let data
+	let red = data.red
+
+
 	const id = $page.params.id;
 
 	const current_asset = Asset_list.find((asset) => asset.id === id);
@@ -21,6 +25,7 @@
 </script>
 
 <div>
+	<h1>{red}</h1>
 	<div>Asset Selected: {name} #{id}</div>
 	<div>Asset ID: #{id}</div>
 	<div>Client Name: {client}</div>

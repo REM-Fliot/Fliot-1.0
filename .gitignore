@@ -8,4 +8,4 @@ node_modules
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-fliot-authentication-firebase-adminsdk-d1e7c-91abcc304e.json
+fliot-authentication-firebase-adminsdk-d1e7c-a7220b3e58.json

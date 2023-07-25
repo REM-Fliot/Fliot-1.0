@@ -4,4 +4,3 @@
 </script>
 
 <Authenticate/>
-<button on:click={async ()=>{await goto("dashboard")}}>Go to dashboard unauthenticated</button>

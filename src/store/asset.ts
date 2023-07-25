@@ -28,6 +28,7 @@ export class Asset {
     }
 }
 
+
 // export let Asset_list = writable([]);
 
 export let Asset_list = writable([])
@@ -60,5 +61,4 @@ export const UpdateArray = () => {
     //     }  
     // })
 }
-
 

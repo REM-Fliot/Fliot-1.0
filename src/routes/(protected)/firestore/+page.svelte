@@ -1,16 +1,21 @@
 <script lang="ts">
 	import {addDoc, deleteDoc, collection, doc, updateDoc} from "firebase/firestore/lite";
 	import { auth_user } from "../../../store/authUser";
-	import { db } from "$lib/firebase/firebase";
+	import { auth, db } from "$lib/firebase/firebase";
     import { goto, invalidateAll } from "$app/navigation";
-    import type { DocumentData, QueryDocumentSnapshot } from "firebase/firestore/lite";
+    import type { CollectionReference, DocumentData, QueryDocumentSnapshot } from "firebase/firestore/lite";
 	import { onMount } from "svelte";
+	import Spinner from "../../../components/Spinner.svelte";
     import { Asset_list, Asset, FetchData } from "../../../store/asset";
 
     export let data
+    $: loaded = data.loaded
     $: assets = data.assets
+
+    const company = $auth_user!.company
+
+    
     let global_modifying: boolean;
-    const col_ref = collection(db,"assets")
     //---BINDED---
     let asset_name_post:string
     let client_name_post:string
@@ -21,12 +26,20 @@
     let client_name_update:string
     let asset_location_update: string
     let date_update: Date | null
+    let col_ref: CollectionReference<DocumentData>
+    col_ref = collection(db,"companies", company, "assets")
 
-    onMount(()=>{
+    onMount(async ()=>{
+        
+        if (!loaded) {
+            await invalidateAll()
+        }
+        else {
+            col_ref = collection(db,"companies", company, "assets")
+        }
         global_modifying = false
     })
     const handleSubmit = async () => {
-        console.log(asset_name_post,client_name_post,date_post)
         await addDoc(col_ref, {
             ASSET_NAME: asset_name_post,
             CLIENT_NAME: client_name_post,
@@ -43,9 +56,8 @@
         })
         await FetchData()
     }
-
     const handleDelete = async (asset_id:string) => {
-        await deleteDoc(doc(db,"assets",asset_id))
+        await deleteDoc(doc(db,"companies", company, "assets",asset_id))
         await invalidateAll()
         await FetchData()
     }
@@ -60,7 +72,7 @@
         await FetchData()
     }
     const handleUpdate = async(asset:QueryDocumentSnapshot<DocumentData>) => {
-        await updateDoc(doc(db,"assets",asset.id), {
+        await updateDoc(doc(db,"companies", company,"assets",asset.id), {
             ASSET_NAME: asset_name_update,
             CLIENT_NAME: client_name_update,
             ASSET_LOCATION: asset_location_update,
@@ -73,8 +85,7 @@
     }
 
 </script>
-<button on:click={async ()=>{await goto("dashboard")}}>Go back to dashboard</button>
-<h1>Welcome, {$auth_user?.email}</h1>
+<h1>Welcome, {$auth_user?.user.email}</h1>
 <h2>New asset registrations</h2>
 <form on:submit={handleSubmit}>
     <label>Asset name: <input type = "text" placeholder = "Asset name" bind:value={asset_name_post}></label>
@@ -88,6 +99,9 @@
     <button>Assign</button>
 </form>
 <h1>Registered Assets</h1>
+{#if !loaded}
+    <Spinner/>
+{:else}
 {#each assets as asset}
     <div class="asset">
         {#if asset.is_modifying}
@@ -116,6 +130,9 @@
         
     </div>
 {/each}
+{/if}
+
+
 
 <style>
     .asset {
