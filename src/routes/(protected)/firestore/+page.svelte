@@ -6,6 +6,7 @@
     import type { CollectionReference, DocumentData, QueryDocumentSnapshot } from "firebase/firestore/lite";
 	import { onMount } from "svelte";
 	import Spinner from "../../../components/Spinner.svelte";
+    import { Asset_list, Asset, FetchData } from "../../../store/asset";
 
     export let data
     $: loaded = data.loaded
@@ -18,9 +19,12 @@
     //---BINDED---
     let asset_name_post:string
     let client_name_post:string
+    let asset_location_post: string
     let date_post: Date | null
+
     let asset_name_update:string
     let client_name_update:string
+    let asset_location_update: string
     let date_update: Date | null
     let col_ref: CollectionReference<DocumentData>
     col_ref = collection(db,"companies", company, "assets")
@@ -39,37 +43,45 @@
         await addDoc(col_ref, {
             ASSET_NAME: asset_name_post,
             CLIENT_NAME: client_name_post,
+            ASSET_LOCATION: asset_location_post,
+            ASSET_ID: Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000,
             DATE: date_post
         }).then(async ()=>{
             console.log("submitting...")
             asset_name_post = "";
             client_name_post = "";
+            asset_location_post = ""
             date_post = null;
             await invalidateAll()
         })
-
+        await FetchData()
     }
     const handleDelete = async (asset_id:string) => {
         await deleteDoc(doc(db,"companies", company, "assets",asset_id))
         await invalidateAll()
+        await FetchData()
     }
     const handleModify = async(asset:QueryDocumentSnapshot<DocumentData>)=>{
         const data = asset.data()
         asset_name_update = data.ASSET_NAME
         client_name_update = data.CLIENT_NAME
+        asset_location_update = data.ASSET_LOCATION
         date_update = data.DATE
         asset.is_modifying = true
         global_modifying = true;
+        await FetchData()
     }
     const handleUpdate = async(asset:QueryDocumentSnapshot<DocumentData>) => {
         await updateDoc(doc(db,"companies", company,"assets",asset.id), {
             ASSET_NAME: asset_name_update,
             CLIENT_NAME: client_name_update,
+            ASSET_LOCATION: asset_location_update,
             DATE: date_update
         })
         await invalidateAll()
         asset.is_modifying=false
         global_modifying = false;
+        await FetchData()
     }
 
 </script>
@@ -79,6 +91,8 @@
     <label>Asset name: <input type = "text" placeholder = "Asset name" bind:value={asset_name_post}></label>
     <br/>
     <label>Client name: <input type = "text" placeholder = "Client name" bind:value={client_name_post}></label>
+    <br/>
+    <label>Asset location: <input type = "text" placeholder = "Asset location" bind:value={asset_location_post}></label>
     <br/>
     <label>Date of service: <input type = "date" placeholder = "Date of service" bind:value={date_post}></label>
     <br/>
@@ -96,6 +110,8 @@
                 <br/>
                 <label>Client name: <input type = "text" placeholder = "Client name" bind:value={client_name_update}></label>
                 <br/>
+                <label>Asset location: <input type = "text" placeholder = "Asset location" bind:value={asset_location_update}></label>
+                <br/>
                 <label>Date of service: <input type = "date" placeholder = "Date of service" bind:value={date_update}></label>
                 <br/>
                 <button>Update</button>
@@ -103,6 +119,7 @@
         {:else}
             <h2>Asset Name: {asset.data().ASSET_NAME} </h2> 
             <div>Client Name: {asset.data().CLIENT_NAME}</div>
+            <div>Asset Location: {asset.data().ASSET_LOCATION}</div>
             <div>Date: {asset.data().DATE}</div>
             <button on:click={()=>handleDelete(asset.id)}>Delete</button>
             {#if !global_modifying}
