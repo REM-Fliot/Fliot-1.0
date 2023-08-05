@@ -6,7 +6,6 @@
 	export let data
 	$: assets = data.assets
 	$: loaded = data.loaded
-	console.log(assets)
 	onMount(async () => {
 		
 		if (!loaded) {

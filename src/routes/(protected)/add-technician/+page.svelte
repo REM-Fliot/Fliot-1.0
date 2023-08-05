@@ -20,7 +20,7 @@
 			return;
 		}
 		authenticating = true;
-		// //Have the required information
+		//Have the required information
 		const response = await fetch('api/add-technician', {
 			method: 'POST',
 			body: JSON.stringify({ email: email, pass: password, username: username, uid: $auth_user?.user.uid }),
