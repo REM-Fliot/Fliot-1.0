@@ -6,7 +6,7 @@
 <div class="container">
 	<img src="src\assets\logo.png" alt="logo" class="logo" />
 	<button class="logout" on:click={clientAuthHandlers.logout}>LOGOUT</button>
-	<button on:click={async ()=>{await goto("dashboard")}}>Go back to dashboard</button>
+	<button on:click={async ()=>{await goto("/dashboard")}}>Go back to dashboard</button>
 
 	<!-- <nav>
 		<ul>

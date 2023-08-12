@@ -14,9 +14,9 @@ export const clientAuthHandlers = {
             auth_user.set({user: user_credentials.user, company: company_name})  //Dont think this should be set here   
             const email = user_credentials.user.email
             await addDoc(collection(db, "companies", company_name,"assets"), {
-                ASSET_NAME: "PLACEHOLDER",
-                CLIENT_NAME: "PLACEHOLDER",
-                DATE: "PLACEHOLDER"
+                ASSET_NAME: "_PLACEHOLDER_",
+                CLIENT_NAME: "_PLACEHOLDER_",
+                DATE: "_PLACEHOLDER_"
             });
             // auth.set
             await setDoc(doc(db, "companies", company_name,"employees",user_credentials.user.uid), {

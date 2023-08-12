@@ -12,7 +12,7 @@ export const POST = async({request}) => {
         console.log(err);
         return new Response(undefined,{status: 403,statusText: err})
     }
-    const {email,pass,username,uid} = await request.json()
+    const {email,pass,username} = await request.json()
         const res = fliot_admin.auth().createUser({
             email: email,
             password: pass,

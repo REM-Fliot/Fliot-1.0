@@ -33,6 +33,7 @@
 			error = true;
 			authenticating = false;
 			err_info = response.statusText
+			return
 		}
 		const uid = await response.text()
 		const company_name = $auth_user!.company //MIGHT BE BAD (null assertion)
