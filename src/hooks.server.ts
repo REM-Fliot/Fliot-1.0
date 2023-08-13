@@ -4,15 +4,15 @@ import { StatusCodes } from "./types";
 
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
-    const is_authenticated_api = event.route.id?.startsWith('/api/authenticated')
+    const is_authenticated_api = event.route.id?.startsWith('/api/private')
     if (is_authenticated_api) {
-        console.log("checking token")
+        console.log("Checking token")
         const auth_header = event.request.headers.get("authorization")
         if (auth_header) {
                 const token = auth_header?.split(" ")[1];
             try {
                 admin_auth.auth().verifyIdToken(token, true).then(()=>{
-                    console.log("Verified Token!")
+                    console.log("Verified token!")
                 })
             }
             catch (err) {
@@ -26,11 +26,6 @@ export async function handle({ event, resolve }) {
         }
     }
     
-
-
-
-
-
     const response = await resolve(event);
     return response;
 }

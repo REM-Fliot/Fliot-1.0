@@ -5,7 +5,7 @@
 	import { page } from "$app/stores";
 
 	const handlePing = async () => {
-		const response = await fliotGET('authenticated/test')
+		const response = await fliotGET('private/test')
 		// const response = await fetch(`/api/test`, {
         //     method: 'GET',
         //     headers: {

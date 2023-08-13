@@ -6,7 +6,7 @@ import { client_auth } from "$lib/firebase/firebase"
 export const fliotGET = async (url: string) => { await fliotFetch(url, RequestMethod.GET) }
 
 const fliotFetch = async (url: string, method: RequestMethod, body: any = undefined) => {
-    const is_authenticated_api = url.startsWith('authenticated')
+    const is_authenticated_api = url.startsWith('private')
 
     if (is_authenticated_api) {
         const user = client_auth.currentUser
