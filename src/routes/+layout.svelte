@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { auth, db } from '../lib/firebase/firebase';
+	import { client_auth, db } from '../lib/firebase/firebase';
 	import { onAuthStateChanged } from 'firebase/auth';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';

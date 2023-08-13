@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 import { redirect } from '@sveltejs/kit';
 import { onMount } from 'svelte';
-import { auth, db } from '../lib/firebase/firebase';
+import { client_auth, db } from '../lib/firebase/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
@@ -15,7 +15,7 @@ import { error } from '@sveltejs/kit';
 export function load(LayoutLoadEvent) {
     const is_authenticated = LayoutLoadEvent.route.id?.startsWith('/(protected)')
     
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(client_auth, async (user) => {
         if (!get(creating_company) && browser) {
             //onAuthStateChanged = when the user variable is resolve - either it is null (not signed in), or User object.
             if (user) {

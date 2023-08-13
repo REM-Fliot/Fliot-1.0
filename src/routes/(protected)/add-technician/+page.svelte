@@ -21,6 +21,7 @@
 		}
 		authenticating = true;
 		//Have the required information
+		console.log("HELLO")
 		const response = await fetch('api/add-technician', {
 			method: 'POST',
 			body: JSON.stringify({ email: email, pass: password, username: username, uid: $auth_user?.user.uid }),
@@ -28,6 +29,7 @@
 				'Content-Type': 'application/json'
 			}
 		});
+		console.log("FINISH CALL")
 		if (!response.ok) {
 			console.log(response.status, response.statusText);
 			error = true;

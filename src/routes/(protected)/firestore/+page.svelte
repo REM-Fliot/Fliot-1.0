@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {addDoc, deleteDoc, collection, doc, updateDoc} from "firebase/firestore/lite";
 	import { auth_user } from "../../../store/authUser";
-	import { auth, db } from "$lib/firebase/firebase";
+	import { client_auth, db } from "$lib/firebase/firebase";
     import { goto, invalidateAll } from "$app/navigation";
     import type { CollectionReference, DocumentData, QueryDocumentSnapshot } from "firebase/firestore/lite";
 	import { onMount } from "svelte";

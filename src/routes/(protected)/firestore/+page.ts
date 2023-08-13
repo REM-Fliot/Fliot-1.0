@@ -3,7 +3,7 @@ import {fetchAssets} from "../../../utility/fetch_data";
 import type { PageLoad } from "./$types";
 import { error } from '@sveltejs/kit';
 import { auth_user} from "../../../store/authUser";
-import { auth } from "$lib/firebase/firebase";
+import { client_auth } from "$lib/firebase/firebase";
 import type { DocumentData, QueryDocumentSnapshot } from "firebase/firestore/lite";
 
 export const load: PageLoad = async () => {

@@ -1,4 +1,4 @@
-import { auth } from "$lib/firebase/firebase";
+import { client_auth } from "$lib/firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { writable, readable } from "svelte/store";
 import type { User } from "firebase/auth";
@@ -14,3 +14,5 @@ type UserExtended = {
 //Add authentication stores here
 export const auth_user = writable<UserExtended|null>(undefined)
 export const creating_company = writable<boolean>(false)
+
+export const loading = writable<boolean>(false)
