@@ -1,18 +1,18 @@
-import { db } from "$lib/firebase/firebase"
-import admin_auth from "$lib/firebase/firebase_admin"
-import admin from "$lib/firebase/firebase_admin"
-import { doc, setDoc } from "firebase/firestore/lite"
+import admin_auth from '$lib/firebase/firebase_admin';
 
-export const POST = async({request}) => {
-    const {email} = await request.json()
+export const POST = async ({ request }: any) => {
+	const { email } = await request.json();
 
-    const res = admin_auth.auth().getUserByEmail(email).then(async user_credentials => {
-        console.log("user found")
-        return new Response(user_credentials.uid, {status: 200})
-    }).catch((err)=>{
-        console.log(err)
-        return new Response(undefined,{status: 404,statusText: err})
-        
-    })
-    return res
-}
+	const res = admin_auth
+		.auth()
+		.getUserByEmail(email)
+		.then(async (user_credentials) => {
+			console.log('user found');
+			return new Response(user_credentials.uid, { status: 200 });
+		})
+		.catch((err) => {
+			console.log(err);
+			return new Response(undefined, { status: 404, statusText: err });
+		});
+	return res;
+};
