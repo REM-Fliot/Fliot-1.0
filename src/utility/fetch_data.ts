@@ -10,10 +10,10 @@ import {
 	limit
 } from 'firebase/firestore/lite';
 
-export const fetchAssets = async (company: string) => {
+const fliotData = async (company: string, query: string) => {
 	let assets: Array<QueryDocumentSnapshot<DocumentData>> = [];
 
-	const col_ref = collection(db, 'companies', company, 'assets');
+	const col_ref = collection(db, 'companies', company, query);
 	await getDocs(col_ref).then((snapshot) => {
 		snapshot.docs.forEach((doc) => {
 			assets.push(doc);
@@ -21,28 +21,24 @@ export const fetchAssets = async (company: string) => {
 	});
 	return assets;
 };
+
+export const fetchAssets = async (company: string) => {
+	return fliotData(company, 'assets');
+};
 export const fetchEmployees = async (company: string) => {
-	let employees: Array<QueryDocumentSnapshot<DocumentData>> = [];
-
-	const col_ref = collection(db, 'companies', company, 'employees');
-	await getDocs(col_ref).then((snapshot) => {
-		snapshot.docs.forEach((doc) => {
-			employees.push(doc);
-		});
-	});
-	return employees;
+	return fliotData(company, 'employees');
 };
-export const fetchChats = async (company: string) => {
-	let chats: Array<QueryDocumentSnapshot<DocumentData>> = [];
+// export const fetchChats = async (company: string) => {
+// 	let chats: Array<QueryDocumentSnapshot<DocumentData>> = [];
 
-	const col_ref = collection(db, 'companies', company, 'chats');
-	await getDocs(col_ref).then((snapshot) => {
-		snapshot.docs.forEach((doc) => {
-			chats.push(doc);
-		});
-	});
-	return chats;
-};
+// 	const col_ref = collection(db, 'companies', company, 'chats');
+// 	await getDocs(col_ref).then((snapshot) => {
+// 		snapshot.docs.forEach((doc) => {
+// 			chats.push(doc);
+// 		});
+// 	});
+// 	return chats;
+// };
 export const fetchMessages = async (company: string, chat_id: string) => {
 	let messages: Array<QueryDocumentSnapshot<DocumentData>> = [];
 

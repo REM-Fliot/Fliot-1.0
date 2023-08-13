@@ -7,10 +7,10 @@ import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore/lit
 import { fetchMessages } from '../../../../utility/fetch_data';
 
 /** @type {import('./$types').PageLoad} */
-export const load: PageLoad = async ({ params }) => {
+export const load: PageLoad = async ({ params }: any) => {
 	console.log('LOADED');
 	console.log(params.chat_id);
-	const company = get(current_company)?.company;
+	const company = get(current_company);
 
 	let loaded = false;
 	let messages: QueryDocumentSnapshot<DocumentData>[] = [];

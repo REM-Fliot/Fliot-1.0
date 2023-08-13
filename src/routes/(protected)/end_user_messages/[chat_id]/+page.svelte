@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 	import { invalidateAll } from "$app/navigation";
 	import { onMount } from "svelte";
 	import CurrentChat from "../../../../components/Current_Chat.svelte";
@@ -24,4 +24,4 @@
 {:else}
 	<CurrentChat messages = {messages} chat_id = {chat_id}/>
 {/if}
-
+ -->

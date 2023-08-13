@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { addDoc, deleteDoc, collection, doc, updateDoc } from 'firebase/firestore/lite';
+	import { addDoc, deleteDoc, collection, doc, updateDoc, setDoc } from 'firebase/firestore/lite';
 	import { current_company } from '../../../store/authStores';
 	import { client_auth, db } from '$lib/firebase/firebase';
 	import { goto, invalidateAll } from '$app/navigation';
@@ -47,7 +47,15 @@
 			// ASSET_LOCATION: asset_location_post,
 			ASSET_ID: Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000,
 			DATE: date_post
-		}).then(async () => {
+		}).then(async (doc_ref) => {
+			const current_time = Date.now();
+			await setDoc(doc(db, 'companies', company, 'chat', doc_ref.id), {
+				TIME_CREATED: current_time,
+				SENT_BY_COMPANY: $current_company,
+				USERNAME: client_auth.currentUser?.displayName,
+				COMPANY: $current_company,
+				CONTENT: 'PLACEHOLDER'
+			});
 			console.log('submitting...');
 			asset_name_post = '';
 			client_name_post = '';
@@ -55,6 +63,7 @@
 			date_post = null;
 			await invalidateAll();
 		});
+
 		await FetchData();
 	};
 	const handleDelete = async (asset_id: string) => {
@@ -144,6 +153,9 @@
 				{#if !global_modifying}
 					<button on:click={() => handleModify(asset)}>Modify</button>
 				{/if}
+				<a data-sveltekit-preload-data="hover" href={`/messages/${asset.id}`}>
+					<button>Go to this chat</button>
+				</a>
 			{/if}
 		</div>
 	{/each}

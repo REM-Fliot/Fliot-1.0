@@ -15,7 +15,10 @@ const resolveUser = async (user: User | null) => {
 	if (!get(creating_company) && browser) {
 		//onAuthStateChanged = when the user variable is resolved - either it is null (not signed in), or User object.
 		let company = null;
+
+		//All routes under the (protected) folder
 		let protected_route = get(page).route.id?.startsWith('/(protected)');
+
 		if (user) {
 			const col_ref = doc(db, 'users', user.uid);
 			await getDoc(col_ref).then((snapshot) => {

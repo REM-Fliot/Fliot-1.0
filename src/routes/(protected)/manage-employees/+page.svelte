@@ -14,7 +14,7 @@
 
 	export let data;
 	const company = $current_company!;
-	$: loaded = data.loaded;
+	$: local_loaded = data.local_loaded;
 	$: employees = data.employees;
 	let global_modifying: boolean;
 	let col_ref: CollectionReference<DocumentData>;
@@ -22,7 +22,7 @@
 	let username_update: string;
 
 	onMount(async () => {
-		if (!loaded) {
+		if (!local_loaded) {
 			await invalidateAll();
 		} else {
 			col_ref = collection(db, 'companies', company, 'assets');
@@ -62,7 +62,7 @@
 </script>
 
 <h1>{company}'s employees</h1>
-{#if loaded}
+{#if local_loaded}
 	<Spinner />
 {:else}
 	{#each employees as employee}

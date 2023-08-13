@@ -11,9 +11,7 @@
 	import { error } from '@sveltejs/kit';
 	import resolveUser from '../auth/resolve-user';
 
-	//All routes under the (protected) folder
-	let protected_route = $page.route.id?.startsWith('/(protected)');
-
+	//The below function runs each time the user auth state changes
 	onAuthStateChanged(client_auth, resolveUser);
 </script>
 

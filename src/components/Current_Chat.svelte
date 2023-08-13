@@ -1,18 +1,13 @@
 <script lang="ts">
-	import {
-		addDoc,
-		collection,
-		type DocumentData,
-		type QueryDocumentSnapshot
-	} from 'firebase/firestore/lite';
+	import { addDoc, collection } from 'firebase/firestore/lite';
+	import type { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore/lite';
 	import { current_company } from '../store/authStores';
 	import Spinner from './Spinner.svelte';
-	import { db } from '$lib/firebase/firebase';
+	import { client_auth, db } from '$lib/firebase/firebase';
 
-	export let messages;
-	export let chat_id;
-	const company_name = $current_company!.company;
-	const username = $current_company?.user.displayName;
+	export let messages: QueryDocumentSnapshot<DocumentData>[];
+	const company_name = $current_company;
+	const username = client_auth.currentUser?.displayName;
 	let message_text = '';
 
 	async function handleSendMessage(event: any) {
@@ -46,8 +41,7 @@
 			bind:value={message_text}
 			id="message_text"
 			type="text"
-			placeholder="Type your message here"
-		/>
+			placeholder="Type your message here" />
 	</label>
 	<button id="submit" type="submit"> Submit </button>
 </form>
