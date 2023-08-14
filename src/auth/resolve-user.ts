@@ -6,7 +6,7 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import Spinner from '../components/Spinner.svelte';
 import { current_company, creating_company, loaded } from '../store/authStores';
-import { collection, doc, getDoc } from 'firebase/firestore/lite';
+import { collection, doc, getDoc } from 'firebase/firestore';
 import { browser } from '$app/environment';
 import { error } from '@sveltejs/kit';
 import { get } from 'svelte/store';
@@ -18,7 +18,6 @@ const resolveUser = async (user: User | null) => {
 
 		//All routes under the (protected) folder
 		let protected_route = get(page).route.id?.startsWith('/(protected)');
-
 		if (user) {
 			const col_ref = doc(db, 'users', user.uid);
 			await getDoc(col_ref).then((snapshot) => {

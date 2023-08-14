@@ -10,7 +10,7 @@ import { client_auth, db } from '../lib/firebase/firebase';
 import { goto } from '$app/navigation';
 import type { User } from 'firebase/auth';
 import { current_company, creating_company } from '../store/authStores';
-import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore/lite';
+import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore';
 import { get } from 'svelte/store';
 
 export const clientAuthHandlers = {
@@ -35,7 +35,7 @@ export const clientAuthHandlers = {
 					COMPANY: company_name
 				});
 
-				await goto('/dashboard');
+				// await goto('/dashboard');
 			})
 			.catch((err) => {
 				console.log(err);
@@ -58,7 +58,7 @@ export const clientAuthHandlers = {
 				if (company) {
 					current_company.set(company);
 				}
-				await goto('/dashboard');
+				// await goto('/dashboard');
 			})
 			.catch((err) => {
 				console.log(err);
@@ -68,7 +68,7 @@ export const clientAuthHandlers = {
 		await signOut(client_auth)
 			.then(async () => {
 				current_company.set(null);
-				await goto('/login');
+				// await goto('/login');
 			})
 			.catch((err) => {
 				console.log(err);

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { addDoc, deleteDoc, collection, doc, updateDoc, setDoc } from 'firebase/firestore/lite';
+	import { addDoc, deleteDoc, collection, doc, updateDoc, setDoc } from 'firebase/firestore';
 	import { current_company } from '../../../store/authStores';
 	import { client_auth, db } from '$lib/firebase/firebase';
 	import { goto, invalidateAll } from '$app/navigation';
@@ -7,7 +7,7 @@
 		CollectionReference,
 		DocumentData,
 		QueryDocumentSnapshot
-	} from 'firebase/firestore/lite';
+	} from 'firebase/firestore';
 	import { onMount } from 'svelte';
 	import Spinner from '../../../components/Spinner.svelte';
 	import { Asset_list, Asset, FetchData } from '../../../store/asset';
@@ -48,10 +48,12 @@
 			ASSET_ID: Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000,
 			DATE: date_post
 		}).then(async (doc_ref) => {
-			const current_time = Date.now();
-			await setDoc(doc(db, 'companies', company, 'chat', doc_ref.id), {
+			const unix_time = Date.now();
+			const date = new Date(unix_time);
+			const current_time = date.toLocaleTimeString();
+			await addDoc(collection(db, 'companies', company, 'assets', doc_ref.id, 'chat'), {
 				TIME_CREATED: current_time,
-				SENT_BY_COMPANY: $current_company,
+				SENT_BY: client_auth.currentUser?.uid,
 				USERNAME: client_auth.currentUser?.displayName,
 				COMPANY: $current_company,
 				CONTENT: 'PLACEHOLDER'
@@ -153,7 +155,7 @@
 				{#if !global_modifying}
 					<button on:click={() => handleModify(asset)}>Modify</button>
 				{/if}
-				<a data-sveltekit-preload-data="hover" href={`/messages/${asset.id}`}>
+				<a data-sveltekit-preload-data="hover" href={`/chat/${asset.id}`}>
 					<button>Go to this chat</button>
 				</a>
 			{/if}

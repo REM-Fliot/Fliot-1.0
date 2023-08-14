@@ -3,13 +3,11 @@ import { current_company } from '../../../../store/authStores';
 import { fetchAssets, fetchEmployees } from '../../../../utility/fetch_data';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from '../../firestore/$types';
-import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore/lite';
+import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { fetchMessages } from '../../../../utility/fetch_data';
 
 /** @type {import('./$types').PageLoad} */
 export const load: PageLoad = async ({ params }: any) => {
-	console.log('LOADED');
-	console.log(params.chat_id);
 	const company = get(current_company);
 
 	let loaded = false;

@@ -8,7 +8,7 @@ import {
 	query,
 	orderBy,
 	limit
-} from 'firebase/firestore/lite';
+} from 'firebase/firestore';
 
 const fliotData = async (company: string, query: string) => {
 	let assets: Array<QueryDocumentSnapshot<DocumentData>> = [];
@@ -42,7 +42,7 @@ export const fetchEmployees = async (company: string) => {
 export const fetchMessages = async (company: string, chat_id: string) => {
 	let messages: Array<QueryDocumentSnapshot<DocumentData>> = [];
 
-	const col_ref = collection(db, 'companies', company, 'chats', chat_id, 'messages');
+	const col_ref = collection(db, 'companies', company, 'assets', chat_id, 'chat');
 	const q = query(col_ref, orderBy('TIME_CREATED'), limit(25));
 	await getDocs(q).then((snapshot) => {
 		snapshot.docs.forEach((doc) => {

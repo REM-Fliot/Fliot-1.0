@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { addDoc, deleteDoc, collection, doc, updateDoc } from 'firebase/firestore/lite';
+	import { addDoc, deleteDoc, collection, doc, updateDoc } from 'firebase/firestore';
 	import { current_company } from '../../../store/authStores';
 	import { client_auth, db } from '$lib/firebase/firebase';
 	import { goto, invalidateAll } from '$app/navigation';
@@ -7,7 +7,7 @@
 		CollectionReference,
 		DocumentData,
 		QueryDocumentSnapshot
-	} from 'firebase/firestore/lite';
+	} from 'firebase/firestore';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import Spinner from '../../../components/Spinner.svelte';
@@ -62,7 +62,7 @@
 </script>
 
 <h1>{company}'s employees</h1>
-{#if local_loaded}
+{#if !local_loaded}
 	<Spinner />
 {:else}
 	{#each employees as employee}

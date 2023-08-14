@@ -7,13 +7,22 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import Spinner from '../components/Spinner.svelte';
 import { creating_company, current_company, loaded } from '../store/authStores';
-import { collection, doc, getDoc } from 'firebase/firestore/lite';
+import { collection, doc, getDoc } from 'firebase/firestore';
 import { browser } from '$app/environment';
 import { error } from '@sveltejs/kit';
 import resolveUser from '../auth/resolve-user';
-import type { PageLoad } from './(protected)/firestore/$types';
 
 /** @type {import('./$types').PageLoad} */
-export function load(LayoutLoadEvent: PageLoad) {
+export function load(LayoutLoadEvent) {
 	const is_authenticated = LayoutLoadEvent.route.id?.startsWith('/(protected)');
+
+	if (get(loaded)) {
+		if (client_auth.currentUser === null && is_authenticated) {
+			console.log('Redirected to login (not logged in) (from load)');
+			throw redirect(302, '/login');
+		} else if (client_auth.currentUser && !is_authenticated) {
+			console.log('Redirected to dashboard (logged in) (from load)');
+			throw redirect(302, '/dashboard');
+		}
+	}
 }

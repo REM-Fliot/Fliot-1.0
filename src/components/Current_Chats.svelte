@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore/lite';
+	import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 	import { current_company } from '../store/authStores';
 	import Spinner from './Spinner.svelte';
 
 	export let chats: QueryDocumentSnapshot<DocumentData>[];
-	const company = $current_company!.company;
+	const company = $current_company!;
 
 	async function handleDelete(event: any) {
 		console.log('DELETE NOT READY YET');
@@ -20,7 +20,6 @@
 				{#if !chat.data().ADMIN}
 					<button on:click={() => handleDelete(chat.id)}>Delete</button>
 				{/if}
-			</button></a
-		>
+			</button></a>
 	</div>
 {/each}

@@ -6,7 +6,7 @@
 	import { page } from '$app/stores';
 	import Spinner from '../components/Spinner.svelte';
 	import { creating_company, current_company, loaded } from '../store/authStores';
-	import { collection, doc, getDoc } from 'firebase/firestore/lite';
+	import { collection, doc, getDoc } from 'firebase/firestore';
 	import { browser } from '$app/environment';
 	import { error } from '@sveltejs/kit';
 	import resolveUser from '../auth/resolve-user';

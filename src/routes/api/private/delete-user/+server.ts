@@ -1,7 +1,7 @@
 import { db } from '$lib/firebase/firebase';
 import admin_auth from '$lib/firebase/firebase_admin';
 import admin from '$lib/firebase/firebase_admin';
-import { doc, setDoc } from 'firebase/firestore/lite';
+import { doc, setDoc } from 'firebase/firestore';
 import { StatusCodes } from '../../../../types';
 
 export const POST = async ({ request }) => {

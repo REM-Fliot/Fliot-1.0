@@ -1,6 +1,6 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { db } from '$lib/firebase/firebase';
-	import { addDoc, collection, doc, setDoc } from 'firebase/firestore/lite';
+	import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 	import { current_company } from '../store/authStores';
 	import { getEmployeeById } from '../utility/get-employee-by-id';
 	import { page } from '$app/stores';
@@ -42,8 +42,7 @@
 					bind:value={user_input}
 					id="user_input"
 					type="text"
-					placeholder="Specify end user to send to start chat with"
-				/>
+					placeholder="Specify end user to send to start chat with" />
 			</label>
 		{/if}
 		<button id="submit" type="submit">Create Chat</button>
@@ -55,4 +54,4 @@
 	#user_input {
 		width: 30%;
 	}
-</style>
+</style> -->

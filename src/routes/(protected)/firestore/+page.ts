@@ -4,7 +4,7 @@ import type { PageLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import { current_company } from '../../../store/authStores';
 import { client_auth } from '$lib/firebase/firebase';
-import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore/lite';
+import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 
 export const load: PageLoad = async () => {
 	const company = get(current_company);
