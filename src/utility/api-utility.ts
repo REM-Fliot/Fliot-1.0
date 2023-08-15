@@ -20,6 +20,7 @@ export const fliotPATCH = async (url: string, body: any) => {
 
 const fliotFetch = async (url: string, method: RequestMethod, body: any = undefined) => {
 	const is_authenticated_api = url.startsWith('private');
+	console.log(body);
 
 	if (is_authenticated_api) {
 		const user = client_auth.currentUser;

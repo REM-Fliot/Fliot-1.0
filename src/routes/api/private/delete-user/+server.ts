@@ -4,7 +4,7 @@ import admin from '$lib/firebase/firebase_admin';
 import { doc, setDoc } from 'firebase/firestore';
 import { StatusCodes } from '../../../../types';
 
-export const POST = async ({ request }) => {
+export const POST = async ({ request }: any) => {
 	const { uid } = await request.json();
 	console.log('deleting', uid);
 	const res = admin_auth

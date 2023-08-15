@@ -11,6 +11,7 @@
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import Spinner from '../../../components/Spinner.svelte';
+	import { fliotPOST } from '../../../utility/api-utility';
 
 	export let data;
 	const company = $current_company!;
@@ -34,16 +35,7 @@
 		await deleteDoc(doc(db, 'companies', company as string, 'employees', uid));
 		await deleteDoc(doc(db, 'users', uid));
 		await invalidateAll();
-		const response = await fetch('api/delete-user', {
-			method: 'POST',
-			body: JSON.stringify({ uid: uid }),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
-		if (!response.ok) {
-			console.log(response.status, response.statusText);
-		}
+		await fliotPOST('private/delete-user', JSON.stringify({ uid: uid }));
 	};
 	const handleModify = async (employee: QueryDocumentSnapshot<DocumentData>) => {
 		const data = employee.data();
