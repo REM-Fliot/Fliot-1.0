@@ -117,7 +117,7 @@
 	};
 
 	const handleTemplateSubmit = async () => {
-		await addDoc(collection(db, 'companies', company 'fsr_templates'), {
+		await addDoc(collection(db, 'companies', company, 'fsr_templates'), {
 			NAME: templateName,
 			HTML_ARRAY: components_list,
 			STRUCTURE: structuredData
