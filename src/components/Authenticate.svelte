@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { clientAuthHandlers } from '../auth/auth';
-	import { creating_company } from '../store/authUser';
+	import { creating_company } from '../store/authStores';
 
 	let name = '';
 	let email = '';
@@ -11,7 +11,7 @@
 	let register = false;
 	let authenticating = false;
 
-	async function handleAuthenticate(event) {
+	async function handleAuthenticate(event: any) {
 		event.preventDefault();
 		if (authenticating) return;
 		if (!email || (!password && !register)) {
@@ -24,9 +24,9 @@
 			if (!register) {
 				await clientAuthHandlers.login(email, password);
 			} else {
-				creating_company.set(true)
+				creating_company.set(true);
 				await clientAuthHandlers.addCompany(email, password, name);
-				creating_company.set(false)
+				creating_company.set(false);
 			}
 		} catch (err) {
 			console.log('There was an AUTH error: ', err);

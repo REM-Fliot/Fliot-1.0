@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { doc, setDoc } from 'firebase/firestore/lite';
-	import { auth_user } from '../../../store/authUser';
 	import { db } from '$lib/firebase/firebase';
+	import { doc, setDoc } from 'firebase/firestore';
+	import { current_company } from '../../../store/authStores';
+	import { fliotPOST } from '../../../utility/api-utility';
 
 	let email = '';
 	let username = '';
@@ -15,41 +16,35 @@
 	async function handleAuthenticate(event: any) {
 		event.preventDefault();
 		if (authenticating) return;
-		if (!email || (!password)) {
+		if (!email || !password) {
 			missing_fields = true;
 			return;
 		}
 		authenticating = true;
-		// //Have the required information
-		const response = await fetch('api/add-technician', {
-			method: 'POST',
-			body: JSON.stringify({ email: email, pass: password, username: username, uid: $auth_user?.user.uid }),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
-		if (!response.ok) {
-			console.log(response.status, response.statusText);
-			error = true;
-			authenticating = false;
-			err_info = response.statusText
-		}
-		const uid = await response.text()
-		const company_name = $auth_user!.company //MIGHT BE BAD (null assertion)
-		await setDoc(doc(db, "companies", company_name, "employees", uid), {
+		//Have the required information
+		const body = {
+			email: email,
+			pass: password,
+			username: username
+		};
+		console.log(body);
+		const response = await fliotPOST('private/add-technician', body);
+		const uid = await response.text();
+		const company_name = $current_company!; //MIGHT BE BAD (null assertion)
+		await setDoc(doc(db, 'companies', company_name, 'employees', uid), {
 			EMAIL: email,
 			USERNAME: username,
 			ADMIN: false
 		});
-		await setDoc(doc(db, "users", uid), {
+		await setDoc(doc(db, 'users', uid), {
 			EMAIL: email,
-			COMPANY: company_name,
+			COMPANY: company_name
 		});
-		authenticating = false
+		authenticating = false;
 		error = false;
-		email = ''
-		username= ''
-		password = ''
+		email = '';
+		username = '';
+		password = '';
 		success = true;
 	}
 </script>
@@ -89,7 +84,7 @@
 		font-family: lato;
 	}
 	#success {
-		color: green
+		color: green;
 	}
 	.authContainer {
 		display: flex;

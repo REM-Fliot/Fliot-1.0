@@ -1,62 +1,69 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { Asset_list } from '../store/asset';
-	import { auth, db } from "../lib/firebase/firebase";
-	import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore/lite";
-	import { auth_user } from '../store/authUser';
-	import { FsrDataToHtml, HtmlToFsrData, getHtmlElements, makeFsrFirestoreReadable } from '../utility/fsr_html_conversion';
 	import { invalidateAll } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { addDoc, collection } from 'firebase/firestore';
+	import { db } from '../lib/firebase/firebase';
+	import { current_company } from '../store/authStores';
+	import {
+		FsrDataToHtml,
+		HtmlToFsrData,
+		getHtmlElements,
+		makeFsrFirestoreReadable
+	} from '../utility/fsr_html_conversion';
 
 	export let assets;
 	export let templates;
 	const id = $page.params.id;
-	
+
+	const company = $current_company!;
+
 	let asset_list = assets;
 	let templates_list = templates;
 	$: asset_list = assets;
 	$: templates_list = templates;
 	let matched = false;
 	let current_asset;
-    let selectedDate:string;
+	let selectedDate: string;
 	$: console.log(typeof selectedDate);
 	let selected_template_idx = 0;
 
 	// const assets_length = asset_list.length
 	// if(asset_list){
-		for(let i = 0; i < asset_list.length; i++){
-			if(asset_list[i].data().ASSET_ID == id){
-				matched = true;
-				current_asset = asset_list[i].data()
-				break;
-			}
+	for (let i = 0; i < asset_list.length; i++) {
+		if (asset_list[i].data().ASSET_ID == id) {
+			matched = true;
+			current_asset = asset_list[i].data();
+			break;
 		}
+	}
 	// }
-	
-	let name:string
-	let client:string
+
+	let name: string;
+	let client: string;
 	if (current_asset) {
-	
 		name = current_asset.ASSET_NAME;
 		client = current_asset.CLIENT_NAME;
 	}
 
-	let html = FsrDataToHtml(templates_list[selected_template_idx].data().STRUCTURE)
+	let html = FsrDataToHtml(templates_list[selected_template_idx].data().STRUCTURE);
 
 	const logger = async () => {
-		if(!selectedDate)
-			return;
-		const stuff = HtmlToFsrData(getHtmlElements(), templates_list[selected_template_idx].data().STRUCTURE);
-		await addDoc(collection(db, "companies", $auth_user.company, "fs reports"), {
+		if (!selectedDate) return;
+		const stuff = HtmlToFsrData(
+			getHtmlElements(),
+			templates_list[selected_template_idx].data().STRUCTURE
+		);
+		await addDoc(collection(db, 'companies', company, 'fs reports'), {
 			CLIENT: client,
 			DATE: selectedDate,
-			STRUCTURE: makeFsrFirestoreReadable(stuff),
-		}).then(async ()=>{
-			console.log("submitting...")
+			STRUCTURE: makeFsrFirestoreReadable(stuff)
+		}).then(async () => {
+			console.log('submitting...');
 			await invalidateAll();
-		})
-	}
-
+		});
+	};
 </script>
+
 {#if matched}
 	<table>
 		<tr>
@@ -64,7 +71,10 @@
 			<td>{id}</td>
 			<td>{client}</td>
 			<td><a href={`../${id}`}>View History & Files</a></td>
-			<button on:click={()=>{logger()}}>log</button>
+			<button
+				on:click={() => {
+					logger();
+				}}>log</button>
 		</tr>
 	</table>
 	<select bind:value={selected_template_idx}>
@@ -76,10 +86,10 @@
 	<input type="date" bind:value={selectedDate} />
 	<div>
 		{#each html as html}
-            <div>
-                {@html html}
-            </div>
-        {/each}
+			<div>
+				{@html html}
+			</div>
+		{/each}
 		<!-- New Report:
 		<form on:submit={handleNewReportSubmission}>
 			{#each html_array as html}
@@ -89,12 +99,6 @@
 		</form> -->
 	</div>
 {/if}
-<style>
-	/* .full-report-field {
-		font-family: Arial, Helvetica, sans-serif;
-	} */
-</style>
-
 
 <!-- const populateHtmlArray = async () => {
 		for(let i = 0; i < structure_array.length; i++){
@@ -156,3 +160,9 @@
 				CONTENT: reportText,
 		});
 	}; -->
+
+<style>
+	/* .full-report-field {
+		font-family: Arial, Helvetica, sans-serif;
+	} */
+</style>
