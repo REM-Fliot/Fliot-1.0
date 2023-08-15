@@ -58,14 +58,14 @@
 			<th class="table-heading">Asset Location</th>
 		</tr>
 		{#each asset_list as result, index}
-			<tr class="table-row" on:click={() => handleClicker(event, result.id)}>
+			<tr class="table-row" on:click={() => handleClicker(event, result.data().ASSET_ID)}>
 				<td class="table-entry">{result.data().ASSET_NAME}</td>
-				<!-- <td class="table-entry">{result.data().id}</td> -->
-				<td class="table-entry">{result.data()}</td>
-				<!-- <td class="table-entry">{result.location}</td> -->
-				<td><a href={`./${result.id}/new_report`}>+ New Report</a></td>
-				<td><a href={`./${result.id}/history`}>Asset History</a></td>
-				<td><a href={`./${result.id}/customer_inquiries`}>Customer Inquiries</a></td>
+				<td class="table-entry">{result.data().ASSET_ID}</td>
+				<td class="table-entry">{result.data().CLIENT_NAME}</td>
+				<td class="table-entry">{result.data().ASSET_LOCATION}</td>
+				<td><a href={`./asset/${result.data().ASSET_ID}/new_report`}>+ New Report</a></td>
+				<td><a href={`./asset/${result.data().ASSET_ID}/history`}>Asset History</a></td>
+				<td><a href={`./asset/${result.data().ASSET_ID}/customer_inquiries`}>Customer Inquiries</a></td>
 			</tr>
 		{/each}
 	</table>
