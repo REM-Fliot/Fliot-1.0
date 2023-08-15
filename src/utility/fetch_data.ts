@@ -14,6 +14,19 @@ export const fetchAssets = async (company: string) => {
     })
     return assets
 }
+
+export const fetchFsrTemplates = async (company: string) => {
+    let templates:Array<QueryDocumentSnapshot<DocumentData>> = []
+
+    const col_ref = collection(db,"companies",company,"fsr_templates")
+    await getDocs(col_ref).then(snapshot=>{
+        snapshot.docs.forEach((doc)=>{
+            templates.push(doc);
+        })
+    })
+    return templates
+}
+
 export const fetchEmployees = async (company: string) => {
     let employees:Array<QueryDocumentSnapshot<DocumentData>> = []
 
