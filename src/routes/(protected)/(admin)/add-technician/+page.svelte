@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { db } from '$lib/firebase/firebase';
 	import { doc, setDoc } from 'firebase/firestore';
-	import { current_company } from '../../../store/authStores';
-	import { fliotPOST } from '../../../utility/api-utility';
+	import { current_company } from '../../../../store/authStores';
+	import { fliotPOST } from '../../../../utility/api-utility';
 
 	let email = '';
 	let username = '';
@@ -28,7 +28,7 @@
 			username: username
 		};
 		console.log(body);
-		const response = await fliotPOST('private/add-technician', body);
+		const response = await fliotPOST('private/admin/add-technician', body);
 		const uid = await response.text();
 		const company_name = $current_company!; //MIGHT BE BAD (null assertion)
 		await setDoc(doc(db, 'companies', company_name, 'employees', uid), {

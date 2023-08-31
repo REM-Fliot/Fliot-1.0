@@ -1,11 +1,11 @@
 <script>
+	import { invalidateAll } from '$app/navigation';
+	import { client_auth, db } from '$lib/firebase/firebase';
+	import { collection, onSnapshot } from 'firebase/firestore';
 	import { onMount } from 'svelte';
 	import CurrentChat from '../../../../components/Current_Chat.svelte';
 	import Spinner from '../../../../components/Spinner.svelte';
-	import { invalidateAll } from '$app/navigation';
-	import { client_auth, db } from '$lib/firebase/firebase';
 	import { current_company } from '../../../../store/authStores';
-	import { onSnapshot, collection } from 'firebase/firestore';
 
 	export let data;
 	$: loaded = data.loaded;
@@ -14,6 +14,8 @@
 
 	onMount(async () => {
 		if (!loaded) {
+			invalidateAll();
+		} else {
 			if ($current_company && client_auth.currentUser) {
 				const doc_ref = collection(db, 'companies', $current_company, 'assets', chat_id, 'chat');
 				onSnapshot(doc_ref, async () => {

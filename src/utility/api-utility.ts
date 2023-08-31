@@ -1,6 +1,5 @@
-import { error } from '@sveltejs/kit';
-import { RequestMethod } from '../types';
 import { client_auth } from '$lib/firebase/firebase';
+import { RequestMethod } from '../types';
 
 export const fliotGET = async (url: string) => {
 	return await fliotFetch(url, RequestMethod.GET);
@@ -28,7 +27,7 @@ const fliotFetch = async (url: string, method: RequestMethod, body: any = undefi
 			throw new Error('User is Undefined');
 		}
 		const response = await user.getIdToken(true).then(async (token) => {
-			return await fetch(`/api/${url}`, {
+			return await fetch(`/api/${url}?` + new URLSearchParams({ uid: user.uid }), {
 				method: method,
 				body: JSON.stringify(body),
 				headers: {

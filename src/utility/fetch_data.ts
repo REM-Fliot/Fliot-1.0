@@ -1,14 +1,14 @@
 import { db } from '$lib/firebase/firebase';
-import { get } from 'svelte/store';
 import {
 	QueryDocumentSnapshot,
 	collection,
 	getDocs,
-	type DocumentData,
-	query,
+	limit,
 	orderBy,
-	limit
+	query,
+	type DocumentData
 } from 'firebase/firestore';
+import { isAdmin } from './get-employee-by-id';
 
 const fliotData = async (company: string, query: string) => {
 	let assets: Array<QueryDocumentSnapshot<DocumentData>> = [];
@@ -49,7 +49,16 @@ export const fetchFsrTemplates = async (company: string) => {
 };
 
 export const fetchEmployees = async (company: string) => {
-	return fliotData(company, 'employees');
+	let assets: Array<QueryDocumentSnapshot<DocumentData>> = [];
+
+	const col_ref = collection(db, 'companies', company, 'employees');
+	await getDocs(col_ref).then((snapshot) => {
+		snapshot.docs.forEach(async (doc) => {
+			doc.is_admin = await isAdmin(doc.id);
+			assets.push(doc);
+		});
+	});
+	return assets;
 };
 // export const fetchChats = async (company: string) => {
 // 	let chats: Array<QueryDocumentSnapshot<DocumentData>> = [];

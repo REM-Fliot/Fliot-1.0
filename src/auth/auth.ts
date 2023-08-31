@@ -32,9 +32,11 @@ export const clientAuthHandlers = {
 					uid: client_auth.currentUser?.uid,
 					claims: claims
 				};
-				fliotPOST('private/admin/manage-roles', body);
+				fliotPOST('private/add-root-user', body);
+				const id_token = await client_auth.currentUser?.getIdTokenResult(true);
+				const new_claims = new Claims(id_token?.claims.admin, id_token?.claims.user_type);
 				//Assume post worked
-				roles.set(claims);
+				roles.set(new_claims);
 				await goto('/dashboard');
 			})
 			.catch((err) => {

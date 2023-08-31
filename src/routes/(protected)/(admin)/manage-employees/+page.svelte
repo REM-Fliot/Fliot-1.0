@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
-	import { db } from '$lib/firebase/firebase';
+	import { client_auth, db } from '$lib/firebase/firebase';
 	import type {
 		CollectionReference,
 		DocumentData,
@@ -9,7 +9,8 @@
 	import { collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 	import { onMount } from 'svelte';
 	import Spinner from '../../../../components/Spinner.svelte';
-	import { current_company } from '../../../../store/authStores';
+	import { current_company, roles } from '../../../../store/authStores';
+	import { Claims, UserType } from '../../../../types';
 	import { fliotPOST } from '../../../../utility/api-utility';
 
 	export let data;
@@ -34,7 +35,7 @@
 		await deleteDoc(doc(db, 'companies', company as string, 'employees', uid));
 		await deleteDoc(doc(db, 'users', uid));
 		await invalidateAll();
-		await fliotPOST('private/delete-user', JSON.stringify({ uid: uid }));
+		await fliotPOST('private/admin/delete-user', JSON.stringify({ uid: uid }));
 	};
 	const handleModify = async (employee: QueryDocumentSnapshot<DocumentData>) => {
 		const data = employee.data();
@@ -49,6 +50,19 @@
 		await invalidateAll();
 		employee.is_modifying = false;
 		global_modifying = false;
+	};
+	const handleToggleAdmin = async (uid: string, is_admin: boolean) => {
+		const claims = new Claims(!is_admin, UserType.Technician);
+		const body = {
+			uid: client_auth.currentUser?.uid,
+			claims: claims
+		};
+		await fliotPOST('private/admin/manage-roles', body);
+		const token_result = await client_auth.currentUser!.getIdTokenResult(true);
+		const new_claims = new Claims(token_result.claims.admin, token_result.claims.user_type);
+		console.log(token_result.claims);
+		roles.set(new_claims);
+		console.log($roles);
 	};
 </script>
 
@@ -70,8 +84,14 @@
 				<div>Name: {employee.data().USERNAME}</div>
 			{/if}
 			<div>Email: {employee.data().EMAIL}</div>
-			{#if !employee.data().ADMIN}
+			{#if employee.data().EMAIL != client_auth.currentUser?.email}
 				<button on:click={() => handleDelete(employee.id)}>Delete</button>
+
+				{#if employee.is_admin}
+					<button on:click={() => handleToggleAdmin(employee.id, false)}> Remove Admin </button>
+				{:else}
+					<button on:click={() => handleToggleAdmin(employee.id, true)}> Set Admin </button>
+				{/if}
 
 				{#if !global_modifying}
 					<button on:click={() => handleModify(employee)}>Modify</button>

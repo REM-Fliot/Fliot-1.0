@@ -1,13 +1,14 @@
-import fliot_admin from '$lib/firebase/firebase_admin';
+import admin_auth from '$lib/firebase/firebase_admin';
 import { StatusCodes } from '../../../../../types';
 
 export const POST = async ({ request }: any) => {
-	const { uid, claims } = await request.json();
-
-	const res = await fliot_admin
+	const { uid } = await request.json();
+	console.log('deleting', uid);
+	const res = admin_auth
 		.auth()
-		.setCustomUserClaims(uid, claims)
+		.deleteUser(uid)
 		.then(() => {
+			console.log('user deleted');
 			return new Response(undefined, { status: StatusCodes.Success });
 		})
 		.catch((err) => {
