@@ -12,6 +12,7 @@ import { error } from '@sveltejs/kit';
 import { get } from 'svelte/store';
 
 const resolveUser = async (user: User | null) => {
+	console.log('Auth State changed');
 	if (!get(creating_company) && browser) {
 		//onAuthStateChanged = when the user variable is resolved - either it is null (not signed in), or User object.
 		let company = null;
@@ -40,7 +41,7 @@ const resolveUser = async (user: User | null) => {
 		} else {
 			if (user) {
 				//Logged in but trying to access the login page
-				console.log('Redirected to dashboard (logged in) (from load)');
+				console.log('Redirected to dashboard (logged in) (from client)');
 				await goto('/dashboard');
 			}
 		}

@@ -16,6 +16,7 @@ import resolveUser from '../auth/resolve-user';
 export function load(LayoutLoadEvent) {
 	const is_authenticated = LayoutLoadEvent.route.id?.startsWith('/(protected)');
 
+	//Mostly redundant I believe
 	if (get(loaded)) {
 		if (client_auth.currentUser === null && is_authenticated) {
 			console.log('Redirected to login (not logged in) (from load)');
