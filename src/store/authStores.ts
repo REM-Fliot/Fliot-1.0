@@ -1,7 +1,6 @@
-import { client_auth } from '$lib/firebase/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { writable, readable } from 'svelte/store';
 import type { User } from 'firebase/auth';
+import { writable } from 'svelte/store';
+import type { Claims } from '../types';
 
 //See https://svelte.dev/tutorial/writable-stores
 
@@ -15,3 +14,4 @@ export const creating_company = writable<boolean>(false);
 
 export const loaded = writable<boolean>(false);
 export const current_company = writable<string | null>(undefined);
+export const roles = writable<Claims | null>(undefined);

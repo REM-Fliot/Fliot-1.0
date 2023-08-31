@@ -29,5 +29,9 @@ export async function handle({ event, resolve }) {
 	//---[Middleware]---
 
 	const response = await resolve(event);
+	if (!response.ok) {
+		console.log('Something went wrong with the api call');
+		throw error(response.status, response.statusText);
+	}
 	return response;
 }

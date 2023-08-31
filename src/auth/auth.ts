@@ -1,17 +1,10 @@
-import {
-	createUserWithEmailAndPassword,
-	getAuth,
-	getIdToken,
-	onAuthStateChanged,
-	signInWithEmailAndPassword,
-	signOut
-} from 'firebase/auth';
-import { client_auth, db } from '../lib/firebase/firebase';
 import { goto } from '$app/navigation';
-import type { User } from 'firebase/auth';
-import { current_company, creating_company } from '../store/authStores';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore';
-import { get } from 'svelte/store';
+import { client_auth, db } from '../lib/firebase/firebase';
+import { current_company, roles } from '../store/authStores';
+import { Claims, UserType } from '../types';
+import { fliotPOST } from '../utility/api-utility';
 
 export const clientAuthHandlers = {
 	addCompany: async (email: string, pass: string, company_name: string) => {
@@ -34,6 +27,14 @@ export const clientAuthHandlers = {
 					EMAIL: email,
 					COMPANY: company_name
 				});
+				const claims = new Claims(true, UserType.Technician);
+				const body = {
+					uid: client_auth.currentUser?.uid,
+					claims: claims
+				};
+				fliotPOST('private/admin/manage-roles', body);
+				//Assume post worked
+				roles.set(claims);
 				await goto('/dashboard');
 			})
 			.catch((err) => {
@@ -68,6 +69,7 @@ export const clientAuthHandlers = {
 		await signOut(client_auth)
 			.then(async () => {
 				current_company.set(null);
+				roles.set(null);
 				// console.log('redirected from button');
 				// await goto('/login');
 			})

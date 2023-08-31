@@ -3,7 +3,7 @@ import admin_auth from '$lib/firebase/firebase_admin';
 import admin from '$lib/firebase/firebase_admin';
 import { doc, setDoc } from 'firebase/firestore';
 
-export const POST = async ({ request }) => {
+export const POST = async ({ request }: any) => {
 	const { email, pass, username } = await request.json();
 	const res = admin_auth
 		.auth()

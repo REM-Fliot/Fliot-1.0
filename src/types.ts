@@ -2,10 +2,19 @@
 
 //Add as needed
 
-export enum Roles {
-	ADMIN,
-	ENDUSER,
-	TECHNICIAN
+export class Claims {
+	admin: boolean;
+	user_type: UserType;
+	constructor(is_admin: boolean, user_type: UserType) {
+		this.admin = is_admin;
+		this.user_type = user_type;
+	}
+}
+
+export enum UserType {
+	Fliot = 1,
+	Technician = 2,
+	EndUser = 3
 }
 
 export enum StatusCodes {

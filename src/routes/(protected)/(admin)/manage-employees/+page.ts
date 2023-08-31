@@ -1,9 +1,8 @@
-import { get } from 'svelte/store';
-import { current_company } from '../../../store/authStores';
-import { fetchEmployees } from '../../../utility/fetch_data';
-import { error } from '@sveltejs/kit';
-import type { PageLoad } from '../firestore/$types';
 import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
+import { get } from 'svelte/store';
+import { current_company } from '../../../../store/authStores';
+import { fetchEmployees } from '../../../../utility/fetch_data';
+import type { PageLoad } from '../../firestore/$types';
 
 /** @type {import('./$types').PageLoad} */
 export const load: PageLoad = async () => {

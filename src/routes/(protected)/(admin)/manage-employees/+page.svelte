@@ -1,17 +1,16 @@
 <script lang="ts">
-	import { addDoc, deleteDoc, collection, doc, updateDoc } from 'firebase/firestore';
-	import { current_company } from '../../../store/authStores';
-	import { client_auth, db } from '$lib/firebase/firebase';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
+	import { db } from '$lib/firebase/firebase';
 	import type {
 		CollectionReference,
 		DocumentData,
 		QueryDocumentSnapshot
 	} from 'firebase/firestore';
+	import { collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 	import { onMount } from 'svelte';
-	import type { PageData } from './$types';
-	import Spinner from '../../../components/Spinner.svelte';
-	import { fliotPOST } from '../../../utility/api-utility';
+	import Spinner from '../../../../components/Spinner.svelte';
+	import { current_company } from '../../../../store/authStores';
+	import { fliotPOST } from '../../../../utility/api-utility';
 
 	export let data;
 	const company = $current_company!;
