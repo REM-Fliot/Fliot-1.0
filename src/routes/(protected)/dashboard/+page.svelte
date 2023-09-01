@@ -35,6 +35,7 @@
 		const res = await fliotGET('private/get-claims-by-uid');
 		const claims = await res.json();
 		console.log(claims);
+		console.log($roles);
 	};
 </script>
 

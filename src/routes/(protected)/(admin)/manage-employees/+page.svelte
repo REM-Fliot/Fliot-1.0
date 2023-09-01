@@ -52,12 +52,12 @@
 		global_modifying = false;
 	};
 	const handleToggleAdmin = async (uid: string, is_admin: boolean) => {
-		const claims = new Claims(!is_admin, UserType.Technician);
+		const claims = new Claims(is_admin, UserType.Technician);
 		const body = {
 			uid: client_auth.currentUser?.uid,
 			claims: claims
 		};
-		await fliotPOST('private/admin/manage-roles', body);
+		await fliotPOST('private/admin/manage-roles', body, uid);
 		const token_result = await client_auth.currentUser!.getIdTokenResult(true);
 		const new_claims = new Claims(token_result.claims.admin, token_result.claims.user_type);
 		console.log(token_result.claims);
@@ -87,11 +87,8 @@
 			{#if employee.data().EMAIL != client_auth.currentUser?.email}
 				<button on:click={() => handleDelete(employee.id)}>Delete</button>
 
-				{#if employee.is_admin}
-					<button on:click={() => handleToggleAdmin(employee.id, false)}> Remove Admin </button>
-				{:else}
-					<button on:click={() => handleToggleAdmin(employee.id, true)}> Set Admin </button>
-				{/if}
+				<button on:click={() => handleToggleAdmin(employee.id, false)}> Remove Admin </button>
+				<button on:click={() => handleToggleAdmin(employee.id, true)}> Set Admin </button>
 
 				{#if !global_modifying}
 					<button on:click={() => handleModify(employee)}>Modify</button>

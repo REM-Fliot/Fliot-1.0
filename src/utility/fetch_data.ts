@@ -8,7 +8,6 @@ import {
 	query,
 	type DocumentData
 } from 'firebase/firestore';
-import { isAdmin } from './get-employee-by-id';
 
 const fliotData = async (company: string, query: string) => {
 	let assets: Array<QueryDocumentSnapshot<DocumentData>> = [];
@@ -54,7 +53,6 @@ export const fetchEmployees = async (company: string) => {
 	const col_ref = collection(db, 'companies', company, 'employees');
 	await getDocs(col_ref).then((snapshot) => {
 		snapshot.docs.forEach(async (doc) => {
-			doc.is_admin = await isAdmin(doc.id);
 			assets.push(doc);
 		});
 	});
