@@ -34,7 +34,7 @@
 		await setDoc(doc(db, 'companies', company_name, 'employees', uid), {
 			EMAIL: email,
 			USERNAME: username,
-			ADMIN: false
+			IS_ADMIN: false
 		});
 		await setDoc(doc(db, 'users', uid), {
 			EMAIL: email,
@@ -68,9 +68,9 @@
 		</label>
 
 		{#if authenticating}
-			<button id="submit-disabled" type="button"> Connecting... </button>
+			<button id="submit-disabled" type="button">Connecting...</button>
 		{:else}
-			<button id="submit" type="submit"> Submit </button>
+			<button id="submit" type="submit">Submit</button>
 		{/if}
 		{#if success}
 			<span id="success">User successfully added!</span>

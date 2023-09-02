@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { addDoc, deleteDoc, collection, doc, updateDoc, setDoc } from 'firebase/firestore';
-	import { current_company } from '../../../store/authStores';
+	import { invalidateAll } from '$app/navigation';
 	import { client_auth, db } from '$lib/firebase/firebase';
-	import { goto, invalidateAll } from '$app/navigation';
 	import type {
 		CollectionReference,
 		DocumentData,
 		QueryDocumentSnapshot
 	} from 'firebase/firestore';
+	import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 	import { onMount } from 'svelte';
 	import Spinner from '../../../components/Spinner.svelte';
-	import { Asset_list, Asset, FetchData } from '../../../store/asset';
+	import { FetchData } from '../../../store/asset';
+	import { current_company } from '../../../store/authStores';
 
 	export let data;
 	$: local_loaded = data.local_loaded;
@@ -35,8 +35,6 @@
 	onMount(async () => {
 		if (!local_loaded) {
 			await invalidateAll();
-		} else {
-			col_ref = collection(db, 'companies', company, 'assets');
 		}
 		global_modifying = false;
 	});
@@ -127,22 +125,26 @@
 				<form
 					on:submit={() => {
 						handleUpdate(asset);
-					}}>
+					}}
+				>
 					<h1>
-						<label
-							>Asset name:
-							<input type="text" placeholder="Asset name" bind:value={asset_name_update} /></label>
+						<label>
+							Asset name:
+							<input type="text" placeholder="Asset name" bind:value={asset_name_update} />
+						</label>
 					</h1>
 					<br />
-					<label
-						>Client name:
-						<input type="text" placeholder="Client name" bind:value={client_name_update} /></label>
+					<label>
+						Client name:
+						<input type="text" placeholder="Client name" bind:value={client_name_update} />
+					</label>
 					<br />
 					<!-- <label>Asset location: <input type = "text" placeholder = "Asset location" bind:value={asset_location_update}></label> -->
 					<!-- <br/> -->
 					<label>
 						Date of service:
-						<input type="date" placeholder="Date of service" bind:value={date_update} /></label>
+						<input type="date" placeholder="Date of service" bind:value={date_update} />
+					</label>
 					<br />
 					<button>Update</button>
 				</form>

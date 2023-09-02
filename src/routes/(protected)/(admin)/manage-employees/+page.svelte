@@ -9,8 +9,7 @@
 	import { collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 	import { onMount } from 'svelte';
 	import Spinner from '../../../../components/Spinner.svelte';
-	import { current_company, roles } from '../../../../store/authStores';
-	import { Claims, UserType } from '../../../../types';
+	import { current_company } from '../../../../store/authStores';
 	import { fliotPOST } from '../../../../utility/api-utility';
 
 	export let data;
@@ -52,17 +51,12 @@
 		global_modifying = false;
 	};
 	const handleToggleAdmin = async (uid: string, is_admin: boolean) => {
-		const claims = new Claims(is_admin, UserType.Technician);
-		const body = {
-			uid: client_auth.currentUser?.uid,
-			claims: claims
-		};
-		await fliotPOST('private/admin/manage-roles', body, uid);
-		const token_result = await client_auth.currentUser!.getIdTokenResult(true);
-		const new_claims = new Claims(token_result.claims.admin, token_result.claims.user_type);
-		console.log(token_result.claims);
-		roles.set(new_claims);
-		console.log($roles);
+		console.log('clicked!');
+		const employee_ref = doc(db, 'companies', company, 'employees', uid);
+		await updateDoc(employee_ref, {
+			IS_ADMIN: is_admin
+		});
+		await invalidateAll();
 	};
 </script>
 
@@ -76,8 +70,11 @@
 				<form
 					on:submit={() => {
 						handleUpdate(employee);
-					}}>
-					<label>Name: <input type="text" placeholder="Name" bind:value={username_update} /></label>
+					}}
+				>
+					<label>
+						Name: <input type="text" placeholder="Name" bind:value={username_update} />
+					</label>
 					<button>Update</button>
 				</form>
 			{:else}
@@ -87,8 +84,9 @@
 			{#if employee.data().EMAIL != client_auth.currentUser?.email}
 				<button on:click={() => handleDelete(employee.id)}>Delete</button>
 
-				<button on:click={() => handleToggleAdmin(employee.id, false)}> Remove Admin </button>
-				<button on:click={() => handleToggleAdmin(employee.id, true)}> Set Admin </button>
+				<button on:click={() => handleToggleAdmin(employee.id, !employee.data().IS_ADMIN)}>
+					{employee.data().IS_ADMIN ? 'Remove Admin' : 'Add Admin'}
+				</button>
 
 				{#if !global_modifying}
 					<button on:click={() => handleModify(employee)}>Modify</button>

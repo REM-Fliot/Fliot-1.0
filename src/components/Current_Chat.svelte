@@ -1,10 +1,8 @@
 <script lang="ts">
-	import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
-	import type { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
-	import { current_company } from '../store/authStores';
-	import Spinner from './Spinner.svelte';
 	import { client_auth, db } from '$lib/firebase/firebase';
-	import { invalidateAll } from '$app/navigation';
+	import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
+	import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
+	import { current_company } from '../store/authStores';
 
 	export let messages: QueryDocumentSnapshot<DocumentData>[];
 	export let chat_id: string;
@@ -26,12 +24,9 @@
 			CONTENT: message_text
 		});
 		message_text = '';
-		// invalidateAll();
 	};
 	const handleDelete = async (message_id: string) => {
 		await deleteDoc(doc(db, 'companies', company, 'assets', chat_id, 'chat', message_id));
-		// await invalidateAll();
-		// await FetchData()
 	};
 </script>
 
@@ -60,9 +55,10 @@
 			bind:value={message_text}
 			id="message_text"
 			type="text"
-			placeholder="Type your message here" />
+			placeholder="Type your message here"
+		/>
 	</label>
-	<button id="submit" type="submit"> Submit </button>
+	<button id="submit" type="submit">Submit</button>
 </form>
 
 <style>

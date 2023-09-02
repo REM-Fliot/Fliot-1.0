@@ -5,39 +5,34 @@ import type { User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { get } from 'svelte/store';
 import { db } from '../lib/firebase/firebase';
-import { creating_company, current_company, loaded, roles } from '../store/authStores';
-import { Claims } from '../types';
+import { creating_company, current_company, loaded } from '../store/authStores';
+import { setAdminFromListener } from './auth-listeners';
 
 const resolveUser = async (user: User | null) => {
 	if (!get(creating_company) && browser) {
 		//onAuthStateChanged = when the user variable is resolved - either it is null (not signed in), or User object.
-		let company = null;
-		let claims = null;
+		let company: string | null = null;
 
 		//All routes under the (protected) folder
-		let protected_route = get(page).route.id?.startsWith('/(protected)');
-		let admin_route = get(page).route.id?.startsWith('/(protected)/(admin)');
+		const protected_route = get(page).route.id?.startsWith('/(protected)');
 		if (user) {
-			const col_ref = doc(db, 'users', user.uid);
-			await getDoc(col_ref).then((snapshot) => {
-				if (snapshot.exists()) {
-					company = snapshot.data()?.COMPANY;
-					if (!company) {
-						throw new Error('No company exists for this user');
-					}
-				} else {
+			const user_ref = doc(db, 'users', user.uid);
+			company = await getDoc(user_ref).then(async (snapshot) => {
+				if (!snapshot.exists()) {
 					throw new Error('No user exists with that id');
 				}
+				return snapshot.data().COMPANY;
 			});
-			const token_result = await user.getIdTokenResult(true);
-			claims = new Claims(token_result.claims.admin, token_result.claims.user_type);
+
+			if (company === undefined || company === null) {
+				throw new Error('No company exists for this user');
+			}
+			const employee_ref = doc(db, 'companies', company, 'employees', user.uid);
+			await getDoc(employee_ref).then(setAdminFromListener);
+
 			if (!protected_route) {
 				//Logged in but trying to access the login page
 				console.log('Redirected to dashboard (logged in) (from client)');
-				await goto('/dashboard');
-			} else if (admin_route && !claims.admin) {
-				//Not admin but trying to access admin route
-				console.log('Redirected to dashboard (not admin) (from client)');
 				await goto('/dashboard');
 			}
 		} else {
@@ -48,9 +43,9 @@ const resolveUser = async (user: User | null) => {
 			}
 		}
 		//The user state is resolved, and loading is finished.
-		loaded.set(true);
 		current_company.set(company);
-		roles.set(claims);
+		loaded.set(true);
+		console.log('auth state resolved');
 	}
 };
 

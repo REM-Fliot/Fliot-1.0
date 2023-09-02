@@ -31,12 +31,9 @@ const fliotFetch = async (
 		if (!user) {
 			throw new Error('User is Undefined');
 		}
-		console.log(uid);
-		console.log(client_auth.currentUser?.uid);
 		if (uid == '') {
 			new_uid = user.uid;
 		}
-		console.log(new_uid);
 		const response = await user.getIdToken(true).then(async (token) => {
 			return await fetch(`/api/${url}?` + new URLSearchParams({ uid: new_uid }), {
 				method: method,

@@ -1,10 +1,8 @@
+import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { get } from 'svelte/store';
+import { current_company } from '../../../store/authStores';
 import { fetchAssets } from '../../../utility/fetch_data';
 import type { PageLoad } from './$types';
-import { error } from '@sveltejs/kit';
-import { current_company } from '../../../store/authStores';
-import { client_auth } from '$lib/firebase/firebase';
-import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 
 export const load: PageLoad = async () => {
 	const company = get(current_company);
@@ -13,6 +11,7 @@ export const load: PageLoad = async () => {
 	let assets: QueryDocumentSnapshot<DocumentData>[] = [];
 
 	if (company) {
+		console.log('loaded assets');
 		assets = await fetchAssets(company);
 		local_loaded = true;
 	}

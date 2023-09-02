@@ -2,9 +2,7 @@ import { goto } from '$app/navigation';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore';
 import { client_auth, db } from '../lib/firebase/firebase';
-import { current_company, roles } from '../store/authStores';
-import { Claims, UserType } from '../types';
-import { fliotPOST } from '../utility/api-utility';
+import { current_company, is_admin } from '../store/authStores';
 
 export const clientAuthHandlers = {
 	addCompany: async (email: string, pass: string, company_name: string) => {
@@ -17,28 +15,19 @@ export const clientAuthHandlers = {
 					CLIENT_NAME: '_PLACEHOLDER_',
 					DATE: '_PLACEHOLDER_'
 				});
-				// auth.set
+
+				//User organization details (IE is an administrator, etc)
 				await setDoc(doc(db, 'companies', company_name, 'employees', user_credentials.user.uid), {
 					EMAIL: user_credentials.user.email,
 					USERNAME: 'ADMIN',
-					ADMIN: true
+					IS_ADMIN: true
 				});
+
+				//User settings (IE preferences, user details, etc)
 				await setDoc(doc(db, 'users', user_credentials.user.uid), {
 					EMAIL: email,
 					COMPANY: company_name
 				});
-				const claims = new Claims(true, UserType.Technician);
-				const body = {
-					uid: client_auth.currentUser?.uid,
-					claims: claims
-				};
-				console.log(body);
-				await fliotPOST('private/add-root-user', body, client_auth.currentUser?.uid);
-				const id_token = await client_auth.currentUser?.getIdTokenResult(true);
-				const new_claims = new Claims(id_token?.claims.admin, id_token?.claims.user_type);
-				console.log(new_claims);
-				//Assume post worked
-				roles.set(new_claims);
 				await goto('/dashboard');
 			})
 			.catch((err) => {
@@ -73,7 +62,7 @@ export const clientAuthHandlers = {
 		await signOut(client_auth)
 			.then(async () => {
 				current_company.set(null);
-				roles.set(null);
+				is_admin.set(null);
 				// console.log('redirected from button');
 				// await goto('/login');
 			})
