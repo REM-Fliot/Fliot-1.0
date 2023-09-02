@@ -9,6 +9,7 @@ import { creating_company, current_company, loaded } from '../store/authStores';
 import { setAdminFromListener } from './auth-listeners';
 
 const resolveUser = async (user: User | null) => {
+	console.log('resolving user');
 	if (!get(creating_company) && browser) {
 		//onAuthStateChanged = when the user variable is resolved - either it is null (not signed in), or User object.
 		let company: string | null = null;
@@ -28,6 +29,7 @@ const resolveUser = async (user: User | null) => {
 				throw new Error('No company exists for this user');
 			}
 			const employee_ref = doc(db, 'companies', company, 'employees', user.uid);
+			console.log('setting admin listener');
 			await getDoc(employee_ref).then(setAdminFromListener);
 
 			if (!protected_route) {

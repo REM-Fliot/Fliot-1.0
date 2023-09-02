@@ -10,7 +10,7 @@
 	import { onMount } from 'svelte';
 	import Spinner from '../../../../components/Spinner.svelte';
 	import { current_company } from '../../../../store/authStores';
-	import { fliotPOST } from '../../../../utility/api-utility';
+	import { fliotDELETE } from '../../../../utility/api-utility';
 
 	export let data;
 	const company = $current_company!;
@@ -34,7 +34,7 @@
 		await deleteDoc(doc(db, 'companies', company as string, 'employees', uid));
 		await deleteDoc(doc(db, 'users', uid));
 		await invalidateAll();
-		await fliotPOST('private/admin/delete-user', JSON.stringify({ uid: uid }));
+		await fliotDELETE('private/admin/delete-user', { uid: uid });
 	};
 	const handleModify = async (employee: QueryDocumentSnapshot<DocumentData>) => {
 		const data = employee.data();

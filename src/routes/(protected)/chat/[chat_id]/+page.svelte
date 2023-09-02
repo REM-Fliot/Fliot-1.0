@@ -2,7 +2,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import { db } from '$lib/firebase/firebase';
 	import type { Unsubscribe } from 'firebase/auth';
-	import { collection, onSnapshot } from 'firebase/firestore';
+	import { collection, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
 	import { onDestroy, onMount } from 'svelte';
 	import CurrentChat from '../../../../components/Current_Chat.svelte';
 	import Spinner from '../../../../components/Spinner.svelte';
@@ -19,8 +19,9 @@
 			await invalidateAll();
 		}
 		console.log('grabbing messages');
-		const doc_ref = collection(db, 'companies', $current_company!, 'assets', chat_id, 'chat');
-		unsubscribe = onSnapshot(doc_ref, async (querySnapshot) => {
+		const chat_ref = collection(db, 'companies', $current_company!, 'assets', chat_id, 'chat');
+		const q = query(chat_ref, orderBy('TIME_CREATED'), limit(10));
+		unsubscribe = onSnapshot(q, async (querySnapshot) => {
 			console.log('Change in DB!');
 			messages = [];
 			querySnapshot.forEach((doc) => {

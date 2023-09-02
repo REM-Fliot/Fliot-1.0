@@ -6,6 +6,8 @@ import { get } from 'svelte/store';
 import { current_company, is_admin } from '../store/authStores';
 
 export const adminListener = () => {
+	console.log('entered adminListener');
+	console.log(client_auth.currentUser?.uid);
 	const doc_ref = doc(
 		db,
 		'companies',
@@ -13,6 +15,7 @@ export const adminListener = () => {
 		'employees',
 		client_auth.currentUser!.uid
 	);
+
 	return onSnapshot(doc_ref, setAdminFromListener);
 };
 

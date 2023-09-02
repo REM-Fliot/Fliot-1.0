@@ -56,6 +56,7 @@ export const clientAuthHandlers = {
 			})
 			.catch((err) => {
 				console.log(err);
+				throw err;
 			});
 	},
 	logout: async () => {

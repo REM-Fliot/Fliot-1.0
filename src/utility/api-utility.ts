@@ -23,6 +23,7 @@ const fliotFetch = async (
 	uid: string,
 	body: any = undefined
 ) => {
+	console.log(body);
 	const is_authenticated_api = url.startsWith('private');
 	let new_uid = uid;
 	if (is_authenticated_api) {

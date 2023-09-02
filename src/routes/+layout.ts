@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import { get } from 'svelte/store';
 import { client_auth } from '../lib/firebase/firebase';
-import { loaded } from '../store/authStores';
+import { is_admin, loaded } from '../store/authStores';
 
 /** @type {import('./$types').PageLoad} */
 export function load(LayoutLoadEvent) {
@@ -18,11 +18,11 @@ export function load(LayoutLoadEvent) {
 			console.log('Redirected to dashboard (logged in) (from load)');
 			throw redirect(302, '/dashboard');
 		}
-		// if (claims) {
-		// 	if (!claims.admin && admin_route) {
-		// 		console.log('Redirected to dashboard (not admin) (from load)');
-		// 		throw redirect(302, '/dashboard');
-		// 	}
-		// }
+		if (get(is_admin)) {
+			if (!get(is_admin) && admin_route) {
+				console.log('Redirected to dashboard (not admin) (from load)');
+				throw redirect(302, '/dashboard');
+			}
+		}
 	}
 }
