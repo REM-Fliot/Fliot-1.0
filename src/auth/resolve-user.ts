@@ -17,6 +17,11 @@ const resolveUser = async (user: User | null) => {
 		//All routes under the (protected) folder
 		const protected_route = get(page).route.id?.startsWith('/(protected)');
 		if (user) {
+			if (!protected_route) {
+				//Logged in but trying to access the login page
+				console.log('Redirected to dashboard (logged in) (from client)');
+				await goto('/dashboard');
+			}
 			const user_ref = doc(db, 'users', user.uid);
 			company = await getDoc(user_ref).then(async (snapshot) => {
 				if (!snapshot.exists()) {
@@ -31,12 +36,6 @@ const resolveUser = async (user: User | null) => {
 			const employee_ref = doc(db, 'companies', company, 'employees', user.uid);
 			console.log('setting admin listener');
 			await getDoc(employee_ref).then(setAdminFromListener);
-
-			if (!protected_route) {
-				//Logged in but trying to access the login page
-				console.log('Redirected to dashboard (logged in) (from client)');
-				await goto('/dashboard');
-			}
 		} else {
 			if (protected_route) {
 				//Not logged in but trying to access protected routes

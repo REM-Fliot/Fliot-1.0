@@ -1,10 +1,14 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
+	import type { Unsubscribe } from 'firebase/auth';
+	import { onDestroy, onMount } from 'svelte';
 	import { adminListener } from '../../auth/auth-listeners';
 	import Navbar from '../../components/Navbar.svelte';
 
+	let unsubscribe: Unsubscribe | null = null;
 	//Listens to changes in IS_ADMIN for current user
-	const unsubscribe = adminListener();
+	onMount(async () => {
+		unsubscribe = await adminListener();
+	});
 
 	onDestroy(() => {
 		if (unsubscribe !== null) {

@@ -5,7 +5,7 @@ import { DocumentSnapshot, doc, onSnapshot, type DocumentData } from 'firebase/f
 import { get } from 'svelte/store';
 import { current_company, is_admin } from '../store/authStores';
 
-export const adminListener = () => {
+export const adminListener = async () => {
 	console.log('entered adminListener');
 	console.log(client_auth.currentUser?.uid);
 	const doc_ref = doc(
@@ -15,13 +15,14 @@ export const adminListener = () => {
 		'employees',
 		client_auth.currentUser!.uid
 	);
-
+	console.log('after doc_ref');
 	return onSnapshot(doc_ref, setAdminFromListener);
 };
 
 export const setAdminFromListener = async (doc: DocumentSnapshot<DocumentData>) => {
 	console.log('Employee admin status changed in DB!');
 	if (!doc.exists() || doc.data() === undefined || doc.data() === null) {
+		console.log('ERROR');
 		throw new Error('Document does not have IS_ADMIN property');
 	}
 	const is_administrator = doc.data().IS_ADMIN;
