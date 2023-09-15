@@ -5,7 +5,8 @@ import type { User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { get } from 'svelte/store';
 import { db } from '../lib/firebase/firebase';
-import { creating_company, current_company, loaded } from '../store/authStores';
+import { creating_company, current_company, loaded, user_type } from '../store/authStores';
+import type { UserType } from '../types';
 import { setAdminFromListener } from './auth-listeners';
 
 const resolveUser = async (user: User | null) => {
@@ -13,6 +14,7 @@ const resolveUser = async (user: User | null) => {
 	if (!get(creating_company) && browser) {
 		//onAuthStateChanged = when the user variable is resolved - either it is null (not signed in), or User object.
 		let company: string | null = null;
+		let type: UserType | null = null;
 
 		//All routes under the (protected) folder
 		const protected_route = get(page).route.id?.startsWith('/(protected)');
@@ -23,19 +25,19 @@ const resolveUser = async (user: User | null) => {
 				await goto('/dashboard');
 			}
 			const user_ref = doc(db, 'users', user.uid);
-			company = await getDoc(user_ref).then(async (snapshot) => {
+			await getDoc(user_ref).then(async (snapshot) => {
 				if (!snapshot.exists()) {
 					throw new Error('No user exists with that id');
 				}
-				return snapshot.data().COMPANY;
+				company = snapshot.data().COMPANY;
+				type = snapshot.data().USER_TYPE;
 			});
 
-			if (company === undefined || company === null) {
-				throw new Error('No company exists for this user');
+			if (company !== undefined && company !== null) {
+				const employee_ref = doc(db, 'companies', company, 'employees', user.uid);
+				console.log('setting admin listener');
+				await getDoc(employee_ref).then(setAdminFromListener);
 			}
-			const employee_ref = doc(db, 'companies', company, 'employees', user.uid);
-			console.log('setting admin listener');
-			await getDoc(employee_ref).then(setAdminFromListener);
 		} else {
 			if (protected_route) {
 				//Not logged in but trying to access protected routes
@@ -45,6 +47,7 @@ const resolveUser = async (user: User | null) => {
 		}
 		//The user state is resolved, and loading is finished.
 		current_company.set(company);
+		user_type.set(type);
 		loaded.set(true);
 		console.log('auth state resolved');
 	}

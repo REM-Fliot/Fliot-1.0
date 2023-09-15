@@ -6,7 +6,7 @@
 	import { fliotPOST } from '../../../../utility/api-utility';
 
 	let email = '';
-	let username = '';
+	let company_name = '';
 	let password = '';
 	let missing_fields = false;
 	let error = false;
@@ -26,26 +26,28 @@
 		const body = {
 			email: email,
 			pass: password,
-			username: username
+			username: 'ROOT'
 		};
 		console.log(body);
 		const response = await fliotPOST('private/admin/add-technician', body);
 		const uid = await response.text();
-		const company_name = $current_company!; //MIGHT BE BAD (null assertion)
-		await setDoc(doc(db, 'companies', company_name, 'employees', uid), {
-			EMAIL: email,
-			USERNAME: username,
-			IS_ADMIN: false
-		});
+		await setDoc(
+			doc(db, 'companies', $current_company!, 'end-users', company_name, 'employees', uid),
+			{
+				EMAIL: email,
+				USERNAME: 'ROOT',
+				IS_ADMIN: true
+			}
+		);
 		await setDoc(doc(db, 'users', uid), {
 			EMAIL: email,
 			COMPANY: company_name,
-			USER_TYPE: UserType.TECHNICIAN
+			USER_TYPE: UserType.ENDUSER
 		});
 		authenticating = false;
 		error = false;
 		email = '';
-		username = '';
+		company_name = '';
 		password = '';
 		success = true;
 	}
@@ -60,7 +62,7 @@
 			<p class="error">{err_info}</p>
 		{/if}
 		<label>
-			<input bind:value={username} type="text" placeholder="Name" />
+			<input bind:value={company_name} type="text" placeholder="Company Name" />
 		</label>
 		<label>
 			<input bind:value={email} type="email" placeholder="Email" />

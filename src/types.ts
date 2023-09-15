@@ -11,11 +11,11 @@
 // 	}
 // }
 
-// export enum UserType {
-// 	Fliot = 1,
-// 	Technician = 2,
-// 	EndUser = 3
-// }
+export enum UserType {
+	FLIOT = 'FLIOT',
+	TECHNICIAN = 'TECHNICIAN',
+	ENDUSER = 'ENDUSER'
+}
 
 //Used for Response objects and error objects. Add as needed.
 export enum StatusCodes {
