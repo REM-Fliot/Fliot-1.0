@@ -16,7 +16,13 @@ export const clientAuthHandlers = {
 				await addDoc(collection(db, 'companies', company_name, 'assets'), {
 					ASSET_NAME: '_PLACEHOLDER_',
 					CLIENT_NAME: '_PLACEHOLDER_',
-					DATE: '_PLACEHOLDER_'
+					DATE: '_PLACEHOLDER_',
+					COMPANY: '_PLACEHOLDER_'
+				});
+				await setDoc(doc(db, 'companies', company_name!, 'end-users', 'first account'), {
+					EMAIL: email,
+					USERNAME: 'ROOT',
+					IS_ADMIN: true
 				});
 
 				//User organization details (IE is an administrator, etc)

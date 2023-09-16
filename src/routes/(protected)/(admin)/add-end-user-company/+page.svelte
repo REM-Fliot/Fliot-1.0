@@ -31,6 +31,7 @@
 		console.log(body);
 		const response = await fliotPOST('private/admin/add-user', body);
 		const uid = await response.text();
+		await setDoc(doc(db, 'companies', $current_company!, 'end-users', company_name), {});
 		await setDoc(
 			doc(db, 'companies', $current_company!, 'end-users', company_name, 'employees', uid),
 			{

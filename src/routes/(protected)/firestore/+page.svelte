@@ -15,7 +15,7 @@
 	export let data;
 	$: local_loaded = data.local_loaded;
 	$: assets = data.assets;
-
+	$: sub_companies = data.sub_companies;
 	const company = $current_company!;
 
 	let global_modifying: boolean;
@@ -24,11 +24,13 @@
 	let client_name_post: string;
 	// let asset_location_post: string
 	let date_post: Date | null;
+	let company_post: string | null;
 
 	let asset_name_update: string;
 	let client_name_update: string;
 	// let asset_location_update: string
 	let date_update: Date | null;
+	let company_update: string | null;
 	let col_ref: CollectionReference<DocumentData>;
 	col_ref = collection(db, 'companies', company, 'assets');
 
@@ -44,7 +46,8 @@
 			CLIENT_NAME: client_name_post,
 			// ASSET_LOCATION: asset_location_post,
 			ASSET_ID: Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000,
-			DATE: date_post
+			DATE: date_post,
+			COMPANY: company_post
 		}).then(async (doc_ref) => {
 			const unix_time = Date.now();
 			const date = new Date(unix_time);
@@ -86,7 +89,8 @@
 			ASSET_NAME: asset_name_update,
 			CLIENT_NAME: client_name_update,
 			// ASSET_LOCATION: asset_location_update,
-			DATE: date_update
+			DATE: date_update,
+			COMPANY: company_update
 		});
 		await invalidateAll();
 		asset.is_modifying = false;
@@ -112,6 +116,14 @@
 		Date of service:
 		<input type="date" placeholder="Date of service" bind:value={date_post} />
 	</label>
+	<br />
+	Company:
+	<select bind:value={company_post}>
+		{#each sub_companies as sub_company}
+			<option>{sub_company}</option>
+		{/each}
+	</select>
+
 	<br />
 	<button>Assign</button>
 </form>
@@ -146,6 +158,13 @@
 						<input type="date" placeholder="Date of service" bind:value={date_update} />
 					</label>
 					<br />
+					Company:
+					<select bind:value={company_update}>
+						{#each sub_companies as sub_company}
+							<option>{sub_company}</option>
+						{/each}
+					</select>
+					<br />
 					<button>Update</button>
 				</form>
 			{:else}
@@ -153,6 +172,7 @@
 				<div>Client Name: {asset.data().CLIENT_NAME}</div>
 				<!-- <div>Asset Location: {asset.data().ASSET_LOCATION}</div> -->
 				<div>Date: {asset.data().DATE}</div>
+				<div>Company: {asset.data().COMPANY}</div>
 				<button on:click={() => handleDelete(asset.id)}>Delete</button>
 				{#if !global_modifying}
 					<button on:click={() => handleModify(asset)}>Modify</button>

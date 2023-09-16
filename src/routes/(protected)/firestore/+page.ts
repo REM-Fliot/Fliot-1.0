@@ -1,7 +1,7 @@
 import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { get } from 'svelte/store';
 import { current_company } from '../../../store/authStores';
-import { fetchAssets } from '../../../utility/fetch_data';
+import { fetchAssets, fetchEndUsers } from '../../../utility/fetch_data';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async () => {
@@ -10,16 +10,20 @@ export const load: PageLoad = async () => {
 
 	let local_loaded = false;
 	let assets: QueryDocumentSnapshot<DocumentData>[] = [];
+	let sub_companies: string[] = [];
 
 	if (company) {
-		console.log('loaded assets');
 		assets = await fetchAssets(company);
+		const end_users = await fetchEndUsers(company);
+		end_users.forEach((sub_company) => {
+			sub_companies.push(sub_company.id);
+		});
 		local_loaded = true;
-		// loaded.set(true);
 	}
 
 	return {
 		assets: assets,
+		sub_companies: sub_companies,
 		local_loaded: local_loaded
 	};
 };

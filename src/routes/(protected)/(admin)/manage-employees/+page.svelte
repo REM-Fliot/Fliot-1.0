@@ -45,7 +45,7 @@
 		global_modifying = true;
 	};
 	const handleUpdate = async (employee: QueryDocumentSnapshot<DocumentData>) => {
-		const employee_ref = await getProperDoc(employee.id);
+		const employee_ref = getProperDoc(employee.id);
 		await updateDoc(employee_ref, {
 			USERNAME: username_update
 		});

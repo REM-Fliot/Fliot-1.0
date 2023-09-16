@@ -2,10 +2,11 @@
 	import { client_auth, db } from '$lib/firebase/firebase';
 	import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 	import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
-	import { current_company } from '../store/authStores';
+	import { current_company, technician_company } from '../store/authStores';
 
 	export let messages: QueryDocumentSnapshot<DocumentData>[];
 	export let chat_id: string;
+	export let child_company: string | null;
 	const company_name = $current_company;
 	const username = client_auth.currentUser?.displayName;
 	let message_text = '';
@@ -31,6 +32,13 @@
 </script>
 
 <h1>Chat Messages</h1>
+{#if child_company}
+	<div style="margin-right:auto, margin-left:0px">{child_company}</div>
+	<div style="margin-left:auto, margin-right:0px">{$current_company}</div>
+{:else}
+	<div style="margin-right:auto, margin-left:0px">{$technician_company}</div>
+	<div style="margin-left:auto, margin-right:0px">{$current_company}</div>
+{/if}
 <div class="messages">
 	{#each messages as message}
 		{#if message.data().SENT_BY === client_auth.currentUser?.uid}
@@ -39,6 +47,12 @@
 				<div>Time: {message.data().TIME_CREATED}</div>
 				<div id="blue_text">{message.data().CONTENT}</div>
 				<button on:click={() => handleDelete(message.id)}>Delete</button>
+			</div>
+		{:else if $current_company === message.data().COMPANY}
+			<div class="right_side">
+				<div>Sent By: {message.data().USERNAME}</div>
+				<div>Time: {message.data().TIME_CREATED}</div>
+				<div id="green_text">{message.data().CONTENT}</div>
 			</div>
 		{:else}
 			<div class="left_side">

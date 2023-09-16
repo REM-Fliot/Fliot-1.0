@@ -22,29 +22,15 @@ const fliotData = async (company: string, query: string) => {
 };
 
 export const fetchAssets = async (company: string) => {
-	// let assets:Array<QueryDocumentSnapshot<DocumentData>> = []
+	return await fliotData(company, 'assets');
+};
 
-	// const col_ref = collection(db,"companies",company,"assets")
-	// await getDocs(col_ref).then(snapshot=>{
-	//     snapshot.docs.forEach((doc)=>{
-	//         assets.push(doc);
-	//     })
-	// })
-	// return assets
-	return fliotData(company, 'assets');
+export const fetchEndUsers = async (company: string) => {
+	return await fliotData(company, 'end-users');
 };
 
 export const fetchFsrTemplates = async (company: string) => {
-	// let templates:Array<QueryDocumentSnapshot<DocumentData>> = []
-
-	// const col_ref = collection(db,"companies",company,"fsr_templates")
-	// await getDocs(col_ref).then(snapshot=>{
-	//     snapshot.docs.forEach((doc)=>{
-	//         templates.push(doc);
-	//     })
-	// })
-	// return templates
-	return fliotData(company, 'fsr_templates');
+	return await fliotData(company, 'fsr_templates');
 };
 
 export const fetchEmployees = async (
