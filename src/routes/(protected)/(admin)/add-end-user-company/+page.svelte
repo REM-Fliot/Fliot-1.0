@@ -29,7 +29,7 @@
 			username: 'ROOT'
 		};
 		console.log(body);
-		const response = await fliotPOST('private/admin/add-technician', body);
+		const response = await fliotPOST('private/admin/add-user', body);
 		const uid = await response.text();
 		await setDoc(
 			doc(db, 'companies', $current_company!, 'end-users', company_name, 'employees', uid),
@@ -42,7 +42,8 @@
 		await setDoc(doc(db, 'users', uid), {
 			EMAIL: email,
 			COMPANY: company_name,
-			USER_TYPE: UserType.ENDUSER
+			USER_TYPE: UserType.ENDUSER,
+			TECHNICIAN_COMPANY: $current_company
 		});
 		authenticating = false;
 		error = false;

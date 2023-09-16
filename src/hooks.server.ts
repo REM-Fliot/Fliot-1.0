@@ -17,14 +17,19 @@ export async function handle({ event, resolve }) {
 				const claims = await admin_auth.auth().verifyIdToken(token, true);
 				const uid = claims.uid;
 				const user_ref = doc(db, 'users', uid);
-				const company = await getDoc(user_ref).then(async (snapshot) => {
+				let company = undefined;
+				let tech_company = undefined;
+				let type = undefined;
+				await getDoc(user_ref).then(async (snapshot) => {
 					if (!snapshot.exists()) {
 						return new Response(undefined, {
 							status: StatusCodes.BadRequest,
 							statusText: 'No user exists with that id'
 						});
 					}
-					return snapshot.data().COMPANY;
+					company = snapshot.data().COMPANY;
+					tech_company = snapshot.data().TECHNICIAN_COMPANY;
+					type = snapshot.data().USER_TYPE;
 				});
 
 				if (company === undefined || company === null) {
@@ -33,7 +38,21 @@ export async function handle({ event, resolve }) {
 						statusText: 'User not assigned to any company'
 					});
 				}
-				const employee_ref = doc(db, 'companies', company, 'employees', uid);
+				let employee_ref = undefined;
+				if (type == 'TECHNICIAN') {
+					employee_ref = doc(db, 'companies', company, 'employees', uid);
+				} else {
+					//If ENDUSER (for now)
+					employee_ref = doc(
+						db,
+						'companies',
+						tech_company!,
+						'end-users',
+						company,
+						'employees',
+						uid
+					);
+				}
 				const snapshot = await getDoc(employee_ref);
 				if (!snapshot.exists()) {
 					return new Response(undefined, {
@@ -41,6 +60,7 @@ export async function handle({ event, resolve }) {
 						statusText: 'Requested company does not have this user'
 					});
 				}
+				console.log(snapshot.data());
 				if (is_admin_api && !snapshot.data().IS_ADMIN) {
 					console.log('Invalid, not an admin!');
 					return new Response(undefined, {

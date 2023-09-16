@@ -11,6 +11,7 @@
 	import Spinner from '../../../../components/Spinner.svelte';
 	import { current_company } from '../../../../store/authStores';
 	import { fliotDELETE } from '../../../../utility/api-utility';
+	import { getProperDoc } from '../../../../utility/get-proper-doc';
 
 	export let data;
 	const company = $current_company!;
@@ -31,7 +32,8 @@
 	});
 
 	const handleDelete = async (uid: string) => {
-		await deleteDoc(doc(db, 'companies', company as string, 'employees', uid));
+		const employee_ref = await getProperDoc(uid);
+		await deleteDoc(employee_ref);
 		await deleteDoc(doc(db, 'users', uid));
 		await invalidateAll();
 		await fliotDELETE('private/admin/delete-user', { uid: uid });
@@ -43,7 +45,8 @@
 		global_modifying = true;
 	};
 	const handleUpdate = async (employee: QueryDocumentSnapshot<DocumentData>) => {
-		await updateDoc(doc(db, 'companies', company as string, 'employees', employee.id), {
+		const employee_ref = await getProperDoc(employee.id);
+		await updateDoc(employee_ref, {
 			USERNAME: username_update
 		});
 		await invalidateAll();
@@ -52,7 +55,8 @@
 	};
 	const handleToggleAdmin = async (uid: string, is_admin: boolean) => {
 		console.log('clicked!');
-		const employee_ref = doc(db, 'companies', company, 'employees', uid);
+		const employee_ref = await getProperDoc(uid);
+
 		await updateDoc(employee_ref, {
 			IS_ADMIN: is_admin
 		});

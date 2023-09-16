@@ -2,13 +2,16 @@ import { goto } from '$app/navigation';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore';
 import { client_auth, db } from '../lib/firebase/firebase';
+import { current_company, technician_company, user_type } from '../store/authStores';
 import { UserType } from '../types';
 
 export const clientAuthHandlers = {
 	addCompany: async (email: string, pass: string, company_name: string) => {
 		await createUserWithEmailAndPassword(client_auth, email, pass)
 			.then(async (user_credentials) => {
-				// current_company.set(company_name); //Dont think this should be set here
+				current_company.set(company_name); //Dont think this should be set here
+				user_type.set(UserType.TECHNICIAN);
+				technician_company.set(null);
 				const email = user_credentials.user.email;
 				await addDoc(collection(db, 'companies', company_name, 'assets'), {
 					ASSET_NAME: '_PLACEHOLDER_',
@@ -27,7 +30,8 @@ export const clientAuthHandlers = {
 				await setDoc(doc(db, 'users', user_credentials.user.uid), {
 					EMAIL: email,
 					COMPANY: company_name,
-					USER_TYPE: UserType.TECHNICIAN
+					USER_TYPE: UserType.TECHNICIAN,
+					TECHNICIAN_COMPANY: null
 				});
 				await goto('/dashboard');
 			})
@@ -49,11 +53,11 @@ export const clientAuthHandlers = {
 					.catch(() => {
 						console.log('No user exists with that id');
 					});
-				// if (company) {
-				// 	current_company.set(company);
-				// }
-				// console.log('redirected from button');
-				// await goto('/dashboard');
+				if (company) {
+					current_company.set(company);
+				}
+				console.log('redirected from button');
+				await goto('/dashboard');
 			})
 			.catch((err) => {
 				console.log(err);

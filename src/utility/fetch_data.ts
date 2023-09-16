@@ -47,16 +47,25 @@ export const fetchFsrTemplates = async (company: string) => {
 	return fliotData(company, 'fsr_templates');
 };
 
-export const fetchEmployees = async (company: string) => {
-	let assets: Array<QueryDocumentSnapshot<DocumentData>> = [];
+export const fetchEmployees = async (
+	company: string,
+	is_technician_company: boolean,
+	technician_company: string | null = null
+) => {
+	let employees: Array<QueryDocumentSnapshot<DocumentData>> = [];
+	let col_ref = undefined;
+	if (is_technician_company) {
+		col_ref = collection(db, 'companies', company, 'employees');
+	} else {
+		col_ref = collection(db, 'companies', technician_company!, 'end-users', company!, 'employees');
+	}
 
-	const col_ref = collection(db, 'companies', company, 'employees');
 	await getDocs(col_ref).then((snapshot) => {
 		snapshot.docs.forEach(async (doc) => {
-			assets.push(doc);
+			employees.push(doc);
 		});
 	});
-	return assets;
+	return employees;
 };
 // export const fetchChats = async (company: string) => {
 // 	let chats: Array<QueryDocumentSnapshot<DocumentData>> = [];

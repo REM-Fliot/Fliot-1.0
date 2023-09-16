@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { db } from '$lib/firebase/firebase';
 	import { doc, setDoc } from 'firebase/firestore';
-	import { current_company } from '../../../../store/authStores';
-	import { UserType } from '../../../../types';
+	import { current_company, technician_company, user_type } from '../../../../store/authStores';
 	import { fliotPOST } from '../../../../utility/api-utility';
+	import { getProperDoc } from '../../../../utility/get-proper-doc';
 
 	let email = '';
 	let username = '';
@@ -29,18 +29,20 @@
 			username: username
 		};
 		console.log(body);
-		const response = await fliotPOST('private/admin/add-technician', body);
+		const response = await fliotPOST('private/admin/add-user', body);
 		const uid = await response.text();
-		const company_name = $current_company!; //MIGHT BE BAD (null assertion)
-		await setDoc(doc(db, 'companies', company_name, 'employees', uid), {
+		const user_doc = getProperDoc(uid);
+		console.log($user_type);
+		await setDoc(user_doc, {
 			EMAIL: email,
 			USERNAME: username,
 			IS_ADMIN: false
 		});
 		await setDoc(doc(db, 'users', uid), {
 			EMAIL: email,
-			COMPANY: company_name,
-			USER_TYPE: UserType.TECHNICIAN
+			COMPANY: $current_company,
+			USER_TYPE: $user_type,
+			TECHNICIAN_COMPANY: $technician_company
 		});
 		authenticating = false;
 		error = false;

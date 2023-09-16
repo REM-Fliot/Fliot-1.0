@@ -1,20 +1,15 @@
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-import { client_auth, db } from '$lib/firebase/firebase';
-import { DocumentSnapshot, doc, onSnapshot, type DocumentData } from 'firebase/firestore';
+import { client_auth } from '$lib/firebase/firebase';
+import { DocumentSnapshot, onSnapshot, type DocumentData } from 'firebase/firestore';
 import { get } from 'svelte/store';
-import { current_company, is_admin } from '../store/authStores';
+import { is_admin } from '../store/authStores';
+import { getProperDoc } from '../utility/get-proper-doc';
 
 export const adminListener = async () => {
 	console.log('entered adminListener');
 	console.log(client_auth.currentUser?.uid);
-	const doc_ref = doc(
-		db,
-		'companies',
-		get(current_company)!,
-		'employees',
-		client_auth.currentUser!.uid
-	);
+	const doc_ref = getProperDoc(client_auth.currentUser!.uid);
 	console.log('after doc_ref');
 	return onSnapshot(doc_ref, setAdminFromListener);
 };

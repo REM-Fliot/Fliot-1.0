@@ -1,47 +1,15 @@
 <script lang="ts">
-	import { current_company, is_admin } from '../../../store/authStores';
-
-	// const handlePing1 = async () => {
-	// 	const employee_ref = doc(
-	// 		db,
-	// 		'companies',
-	// 		$current_company!,
-	// 		'employees',
-	// 		client_auth.currentUser!.uid
-	// 	);
-	// 	await updateDoc(employee_ref, {
-	// 		IS_ADMIN: true
-	// 	});
-	// };
-	// const handlePing2 = async () => {
-	// 	const employee_ref = doc(
-	// 		db,
-	// 		'companies',
-	// 		$current_company!,
-	// 		'employees',
-	// 		client_auth.currentUser!.uid
-	// 	);
-	// 	await updateDoc(employee_ref, {
-	// 		IS_ADMIN: false
-	// 	});
-	// };
-	// const handlePing3 = async () => {
-	// 	const employee_ref = doc(
-	// 		db,
-	// 		'companies',
-	// 		$current_company!,
-	// 		'employees',
-	// 		client_auth.currentUser!.uid
-	// 	);
-	// 	await getDoc(employee_ref).then((doc) => {
-	// 		console.log(doc.data()!.IS_ADMIN);
-	// 	});
-	// };
+	import { current_company, is_admin, user_type } from '../../../store/authStores';
+	import { UserType } from '../../../types';
+	console.log($current_company);
 </script>
 
 <div>
 	{#if $current_company}
 		<h1>{$current_company}'s Dashboard</h1>
+	{/if}
+	{#if $user_type}
+		<h1>You are a {$user_type}</h1>
 	{/if}
 </div>
 
@@ -55,12 +23,14 @@
 	<a data-sveltekit-preload-data="hover" href="/manage-employees">
 		<button>Manage Employees</button>
 	</a>
-	<a data-sveltekit-preload-data="hover" href="/add-technician">
-		<button>Add a new technician</button>
+	<a data-sveltekit-preload-data="hover" href="/add-user">
+		<button>Add a new {$user_type}</button>
 	</a>
-	<a data-sveltekit-preload-data="hover" href="/add-end-user-company">
-		<button>Add a new end-user company</button>
-	</a>
+	{#if $user_type == UserType.TECHNICIAN}
+		<a data-sveltekit-preload-data="hover" href="/add-end-user-company">
+			<button>Add a new end-user company</button>
+		</a>
+	{/if}
 {/if}
 <a data-sveltekit-preload-data="hover" href="/add-fsr-template">
 	<button>Add FSR Template</button>

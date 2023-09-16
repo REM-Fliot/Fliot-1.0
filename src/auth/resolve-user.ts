@@ -5,7 +5,13 @@ import type { User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { get } from 'svelte/store';
 import { db } from '../lib/firebase/firebase';
-import { creating_company, current_company, loaded, user_type } from '../store/authStores';
+import {
+	creating_company,
+	current_company,
+	loaded,
+	technician_company,
+	user_type
+} from '../store/authStores';
 import type { UserType } from '../types';
 import { setAdminFromListener } from './auth-listeners';
 
@@ -15,6 +21,7 @@ const resolveUser = async (user: User | null) => {
 		//onAuthStateChanged = when the user variable is resolved - either it is null (not signed in), or User object.
 		let company: string | null = null;
 		let type: UserType | null = null;
+		let tech_company: string | null = null;
 
 		//All routes under the (protected) folder
 		const protected_route = get(page).route.id?.startsWith('/(protected)');
@@ -29,12 +36,28 @@ const resolveUser = async (user: User | null) => {
 				if (!snapshot.exists()) {
 					throw new Error('No user exists with that id');
 				}
+				console.log(snapshot.data());
 				company = snapshot.data().COMPANY;
+				tech_company = snapshot.data().TECHNICIAN_COMPANY;
 				type = snapshot.data().USER_TYPE;
 			});
-
+			console.log(type);
 			if (company !== undefined && company !== null) {
-				const employee_ref = doc(db, 'companies', company, 'employees', user.uid);
+				let employee_ref = undefined;
+				if (type == 'TECHNICIAN') {
+					employee_ref = doc(db, 'companies', company, 'employees', user.uid);
+				} else {
+					//If ENDUSER (for now)
+					employee_ref = doc(
+						db,
+						'companies',
+						tech_company!,
+						'end-users',
+						company,
+						'employees',
+						user.uid
+					);
+				}
 				console.log('setting admin listener');
 				await getDoc(employee_ref).then(setAdminFromListener);
 			}
@@ -47,6 +70,7 @@ const resolveUser = async (user: User | null) => {
 		}
 		//The user state is resolved, and loading is finished.
 		current_company.set(company);
+		technician_company.set(tech_company);
 		user_type.set(type);
 		loaded.set(true);
 		console.log('auth state resolved');
