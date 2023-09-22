@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { addDoc, deleteDoc, collection, doc, updateDoc } from 'firebase/firestore';
-	import { current_company } from '../../../store/authStores';
+	import { invalidateAll } from '$app/navigation';
 	import { client_auth, db } from '$lib/firebase/firebase';
-	import { goto, invalidateAll } from '$app/navigation';
 	import type {
 		CollectionReference,
 		DocumentData,
 		QueryDocumentSnapshot
 	} from 'firebase/firestore';
+	import { collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 	import { onMount } from 'svelte';
-	import type { PageData } from './$types';
-	import Spinner from '../../../components/Spinner.svelte';
-	import { fliotPOST } from '../../../utility/api-utility';
+	import Spinner from '../../../../components/Spinner.svelte';
+	import { current_company } from '../../../../store/authStores';
+	import { fliotDELETE } from '../../../../utility/api-utility';
+	import { getProperDoc } from '../../../../utility/get-proper-doc';
 
 	export let data;
 	const company = $current_company!;
@@ -32,10 +32,11 @@
 	});
 
 	const handleDelete = async (uid: string) => {
-		await deleteDoc(doc(db, 'companies', company as string, 'employees', uid));
+		const employee_ref = await getProperDoc(uid);
+		await deleteDoc(employee_ref);
 		await deleteDoc(doc(db, 'users', uid));
 		await invalidateAll();
-		await fliotPOST('private/delete-user', JSON.stringify({ uid: uid }));
+		await fliotDELETE('private/admin/delete-user', { uid: uid });
 	};
 	const handleModify = async (employee: QueryDocumentSnapshot<DocumentData>) => {
 		const data = employee.data();
@@ -44,12 +45,22 @@
 		global_modifying = true;
 	};
 	const handleUpdate = async (employee: QueryDocumentSnapshot<DocumentData>) => {
-		await updateDoc(doc(db, 'companies', company as string, 'employees', employee.id), {
+		const employee_ref = getProperDoc(employee.id);
+		await updateDoc(employee_ref, {
 			USERNAME: username_update
 		});
 		await invalidateAll();
 		employee.is_modifying = false;
 		global_modifying = false;
+	};
+	const handleToggleAdmin = async (uid: string, is_admin: boolean) => {
+		console.log('clicked!');
+		const employee_ref = await getProperDoc(uid);
+
+		await updateDoc(employee_ref, {
+			IS_ADMIN: is_admin
+		});
+		await invalidateAll();
 	};
 </script>
 
@@ -63,16 +74,23 @@
 				<form
 					on:submit={() => {
 						handleUpdate(employee);
-					}}>
-					<label>Name: <input type="text" placeholder="Name" bind:value={username_update} /></label>
+					}}
+				>
+					<label>
+						Name: <input type="text" placeholder="Name" bind:value={username_update} />
+					</label>
 					<button>Update</button>
 				</form>
 			{:else}
 				<div>Name: {employee.data().USERNAME}</div>
 			{/if}
 			<div>Email: {employee.data().EMAIL}</div>
-			{#if !employee.data().ADMIN}
+			{#if employee.data().EMAIL != client_auth.currentUser?.email}
 				<button on:click={() => handleDelete(employee.id)}>Delete</button>
+
+				<button on:click={() => handleToggleAdmin(employee.id, !employee.data().IS_ADMIN)}>
+					{employee.data().IS_ADMIN ? 'Remove Admin' : 'Add Admin'}
+				</button>
 
 				{#if !global_modifying}
 					<button on:click={() => handleModify(employee)}>Modify</button>

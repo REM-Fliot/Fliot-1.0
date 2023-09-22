@@ -1,38 +1,43 @@
-import {
-	createUserWithEmailAndPassword,
-	getAuth,
-	getIdToken,
-	onAuthStateChanged,
-	signInWithEmailAndPassword,
-	signOut
-} from 'firebase/auth';
-import { client_auth, db } from '../lib/firebase/firebase';
 import { goto } from '$app/navigation';
-import type { User } from 'firebase/auth';
-import { current_company, creating_company } from '../store/authStores';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore';
-import { get } from 'svelte/store';
+import { client_auth, db } from '../lib/firebase/firebase';
+import { current_company, technician_company, user_type } from '../store/authStores';
+import { UserType } from '../types';
 
 export const clientAuthHandlers = {
 	addCompany: async (email: string, pass: string, company_name: string) => {
 		await createUserWithEmailAndPassword(client_auth, email, pass)
 			.then(async (user_credentials) => {
 				current_company.set(company_name); //Dont think this should be set here
+				user_type.set(UserType.TECHNICIAN);
+				technician_company.set(null);
 				const email = user_credentials.user.email;
 				await addDoc(collection(db, 'companies', company_name, 'assets'), {
 					ASSET_NAME: '_PLACEHOLDER_',
 					CLIENT_NAME: '_PLACEHOLDER_',
-					DATE: '_PLACEHOLDER_'
+					DATE: '_PLACEHOLDER_',
+					COMPANY: '_PLACEHOLDER_'
 				});
-				// auth.set
+				await setDoc(doc(db, 'companies', company_name!, 'end-users', 'first account'), {
+					EMAIL: email,
+					USERNAME: 'ROOT',
+					IS_ADMIN: true
+				});
+
+				//User organization details (IE is an administrator, etc)
 				await setDoc(doc(db, 'companies', company_name, 'employees', user_credentials.user.uid), {
 					EMAIL: user_credentials.user.email,
 					USERNAME: 'ADMIN',
-					ADMIN: true
+					IS_ADMIN: true
 				});
+
+				//User settings (IE preferences, user details, etc)
 				await setDoc(doc(db, 'users', user_credentials.user.uid), {
 					EMAIL: email,
-					COMPANY: company_name
+					COMPANY: company_name,
+					USER_TYPE: UserType.TECHNICIAN,
+					TECHNICIAN_COMPANY: null
 				});
 				await goto('/dashboard');
 			})
@@ -57,17 +62,19 @@ export const clientAuthHandlers = {
 				if (company) {
 					current_company.set(company);
 				}
-				// console.log('redirected from button');
-				// await goto('/dashboard');
+				console.log('redirected from button');
+				await goto('/dashboard');
 			})
 			.catch((err) => {
 				console.log(err);
+				throw err;
 			});
 	},
 	logout: async () => {
 		await signOut(client_auth)
 			.then(async () => {
-				current_company.set(null);
+				// current_company.set(null);
+				// is_admin.set(null);
 				// console.log('redirected from button');
 				// await goto('/login');
 			})

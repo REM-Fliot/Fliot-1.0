@@ -2,12 +2,22 @@
 
 //Add as needed
 
-export enum Roles {
-	ADMIN,
-	ENDUSER,
-	TECHNICIAN
+// export class Claims {
+// 	admin: boolean;
+// 	user_type: UserType;
+// 	constructor(is_admin: boolean, user_type: UserType) {
+// 		this.admin = is_admin;
+// 		this.user_type = user_type;
+// 	}
+// }
+
+export enum UserType {
+	FLIOT = 'FLIOT',
+	TECHNICIAN = 'TECHNICIAN',
+	ENDUSER = 'ENDUSER'
 }
 
+//Used for Response objects and error objects. Add as needed.
 export enum StatusCodes {
 	NotFound = 404,
 	Success = 200,
@@ -19,6 +29,6 @@ export enum RequestMethod {
 	POST = 'POST',
 	DELETE = 'DELETE',
 	GET = 'GET',
-	PUT = 'PIT',
+	PUT = 'PUT',
 	PATCH = 'PATCH'
 }

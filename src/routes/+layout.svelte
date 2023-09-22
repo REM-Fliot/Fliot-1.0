@@ -1,12 +1,20 @@
 <script lang="ts">
 	import { onAuthStateChanged } from 'firebase/auth';
+	import { onDestroy } from 'svelte';
 	import resolveUser from '../auth/resolve-user';
 	import Spinner from '../components/Spinner.svelte';
 	import { client_auth } from '../lib/firebase/firebase';
 	import { loaded } from '../store/authStores';
 
 	//The below function runs each time the user auth state changes
-	onAuthStateChanged(client_auth, resolveUser);
+	const unsubscribe = onAuthStateChanged(client_auth, resolveUser);
+
+	onDestroy(() => {
+		if (unsubscribe !== null) {
+			console.log('unsubscribing from auth listener');
+			unsubscribe();
+		}
+	});
 </script>
 
 <div>

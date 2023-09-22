@@ -1,13 +1,12 @@
 import { db } from '$lib/firebase/firebase';
-import { get } from 'svelte/store';
 import {
 	QueryDocumentSnapshot,
 	collection,
 	getDocs,
-	type DocumentData,
-	query,
+	limit,
 	orderBy,
-	limit
+	query,
+	type DocumentData
 } from 'firebase/firestore';
 
 const fliotData = async (company: string, query: string) => {
@@ -23,33 +22,36 @@ const fliotData = async (company: string, query: string) => {
 };
 
 export const fetchAssets = async (company: string) => {
-	// let assets:Array<QueryDocumentSnapshot<DocumentData>> = []
+	return await fliotData(company, 'assets');
+};
 
-	// const col_ref = collection(db,"companies",company,"assets")
-	// await getDocs(col_ref).then(snapshot=>{
-	//     snapshot.docs.forEach((doc)=>{
-	//         assets.push(doc);
-	//     })
-	// })
-	// return assets
-	return fliotData(company, 'assets');
+export const fetchEndUsers = async (company: string) => {
+	return await fliotData(company, 'end-users');
 };
 
 export const fetchFsrTemplates = async (company: string) => {
-	// let templates:Array<QueryDocumentSnapshot<DocumentData>> = []
-
-	// const col_ref = collection(db,"companies",company,"fsr_templates")
-	// await getDocs(col_ref).then(snapshot=>{
-	//     snapshot.docs.forEach((doc)=>{
-	//         templates.push(doc);
-	//     })
-	// })
-	// return templates
-	return fliotData(company, 'fsr_templates');
+	return await fliotData(company, 'fsr_templates');
 };
 
-export const fetchEmployees = async (company: string) => {
-	return fliotData(company, 'employees');
+export const fetchEmployees = async (
+	company: string,
+	is_technician_company: boolean,
+	technician_company: string | null = null
+) => {
+	let employees: Array<QueryDocumentSnapshot<DocumentData>> = [];
+	let col_ref = undefined;
+	if (is_technician_company) {
+		col_ref = collection(db, 'companies', company, 'employees');
+	} else {
+		col_ref = collection(db, 'companies', technician_company!, 'end-users', company!, 'employees');
+	}
+
+	await getDocs(col_ref).then((snapshot) => {
+		snapshot.docs.forEach(async (doc) => {
+			employees.push(doc);
+		});
+	});
+	return employees;
 };
 // export const fetchChats = async (company: string) => {
 // 	let chats: Array<QueryDocumentSnapshot<DocumentData>> = [];

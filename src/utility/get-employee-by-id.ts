@@ -1,6 +1,6 @@
 import { db } from '$lib/firebase/firebase';
-import { error } from '@sveltejs/kit';
 import { collection, getDocs, limit, query, where } from 'firebase/firestore';
+import { fliotGET } from './api-utility';
 
 export const getEmployeeById = async (company: string, email: string) => {
 	let id = undefined;
@@ -18,4 +18,10 @@ export const getEmployeeById = async (company: string, email: string) => {
 			throw new Error(err);
 		});
 	return id;
+};
+
+export const isAdmin = async (uid: string) => {
+	const res = await fliotGET('private/get-claims-by-uid');
+	const claims = await res.json();
+	return claims.admin;
 };
