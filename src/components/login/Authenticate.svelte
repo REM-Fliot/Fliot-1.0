@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { clientAuthHandlers } from '../auth/auth';
-	import { creating_company } from '../store/authStores';
+	import { clientAuthHandlers } from '../../auth/auth';
+	import { creating_company } from '../../store/authStores';
 
 	let name = '';
 	let email = '';
@@ -40,55 +40,73 @@
 	}
 </script>
 
-<div class="authContainer">
-	<form on:submit={handleAuthenticate}>
-		<h2 id="login-title">{register ? 'Register' : 'Login'}</h2>
-		{#if missing_fields}
-			<p class="error">Missing Fields</p>
-		{:else if error}
-			<p class="error">{err_info}</p>
-		{/if}
-		{#if register}
-			<label>
-				<input bind:value={name} type="text" placeholder="Company Name" />
-			</label>
-		{/if}
-		<label>
-			<input bind:value={email} type="email" placeholder="Email" />
-		</label>
-		<label>
-			<input bind:value={password} type="password" placeholder="Password" />
-		</label>
+<div>
+	<div class="flex justify-center flex-wrap">
+		<div class="flex justify-center flex-wrap w-1/4 gap-y-2">
+			<div class="w-full">
+				<form class="flex flex-wrap gap-3" on:submit={handleAuthenticate}>
+					<h2 class="text-5xl text-center p-10 w-full">{register ? 'Register' : 'Sign In'}</h2>
+					{#if missing_fields}
+						<p class="error">Missing Fields</p>
+					{:else if error}
+						<p class="error">{err_info}</p>
+					{/if}
+					{#if register}
+						<label>
+							<input bind:value={name} type="text" placeholder="Company Name" />
+						</label>
+					{/if}
+					<input
+						class="w-full p-4 text-white placeholder-white bg-gray-800 rounded-lg"
+						bind:value={email}
+						type="email"
+						placeholder="Email"
+					/>
+					<div class="relative w-full">
+						<input
+							class="w-full p-4 text-white placeholder-white bg-sky-400 rounded-lg"
+							bind:value={password}
+							type="password"
+							placeholder="Sign in to Your Account"
+						/>
+						<button class=" absolute top-4 right-4" type="submit" disabled={authenticating}>
+							<img alt="An arrow to login" src="/svgs/login/login_arrow.svg" />
+						</button>
+					</div>
 
-		{#if authenticating}
-			<button id="submit-disabled" type="button"> Connecting... </button>
-		{:else}
-			<button id="submit" type="submit"> Submit </button>
-		{/if}
-	</form>
-	<div class="options">
-		<p>Or</p>
-		{#if register}
-			<div>
-				<p>
-					<span>Already have an account?</span>
-					<span>&nbsp;</span>
-					<span on:click={toggleRegister} on:keydown={() => {}}>Login</span>
-				</p>
+					<!-- {#if authenticating}
+						<button id="submit-disabled" type="button">Connecting...</button>
+					{:else}
+						<button id="submit" type="submit">Submit</button>
+					{/if} -->
+				</form>
 			</div>
-		{:else}
+
 			<div>
-				<p>
-					<span>Don't have an account?</span>
-					<span>&nbsp;</span>
-					<span on:click={toggleRegister} on:keydown={() => {}}>Register</span>
-				</p>
+				<p>Or</p>
+				{#if register}
+					<div>
+						<p>
+							<span>Already have an account?</span>
+							<span>&nbsp;</span>
+							<span on:click={toggleRegister} on:keydown={() => {}}>Login</span>
+						</p>
+					</div>
+				{:else}
+					<div>
+						<p>
+							<span>Don't have an account?</span>
+							<span>&nbsp;</span>
+							<span on:click={toggleRegister} on:keydown={() => {}}>Register</span>
+						</p>
+					</div>
+				{/if}
 			</div>
-		{/if}
+		</div>
 	</div>
 </div>
 
-<style>
+<!-- <style>
 	@font-face {
 		src: url(fonts/Lato/Lato-Regular.ttf);
 		font-family: lato;
@@ -163,4 +181,4 @@
 		color: #e03456;
 		text-align: center;
 	}
-</style>
+</style> -->
