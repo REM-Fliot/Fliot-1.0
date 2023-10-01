@@ -28,11 +28,9 @@
 			pass: password,
 			username: username
 		};
-		console.log(body);
 		const response = await fliotPOST('private/admin/add-user', body);
 		const uid = await response.text();
 		const user_doc = getProperDoc(uid);
-		console.log($user_type);
 		await setDoc(user_doc, {
 			EMAIL: email,
 			USERNAME: username,
@@ -83,10 +81,6 @@
 </div>
 
 <style>
-	@font-face {
-		src: url(fonts/Lato/Lato-Regular.ttf);
-		font-family: lato;
-	}
 	#success {
 		color: green;
 	}

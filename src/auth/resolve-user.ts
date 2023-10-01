@@ -36,12 +36,10 @@ const resolveUser = async (user: User | null) => {
 				if (!snapshot.exists()) {
 					throw new Error('No user exists with that id');
 				}
-				console.log(snapshot.data());
 				company = snapshot.data().COMPANY;
 				tech_company = snapshot.data().TECHNICIAN_COMPANY;
 				type = snapshot.data().USER_TYPE;
 			});
-			console.log(type);
 			if (company !== undefined && company !== null) {
 				let employee_ref = undefined;
 				if (type == 'TECHNICIAN') {
@@ -58,7 +56,6 @@ const resolveUser = async (user: User | null) => {
 						user.uid
 					);
 				}
-				console.log('setting admin listener');
 				await getDoc(employee_ref).then(setAdminFromListener);
 			}
 		} else {

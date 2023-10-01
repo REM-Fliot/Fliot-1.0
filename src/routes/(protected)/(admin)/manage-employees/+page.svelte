@@ -54,7 +54,6 @@
 		global_modifying = false;
 	};
 	const handleToggleAdmin = async (uid: string, is_admin: boolean) => {
-		console.log('clicked!');
 		const employee_ref = await getProperDoc(uid);
 
 		await updateDoc(employee_ref, {

@@ -6,9 +6,7 @@ import type { PageLoad } from '../../../firestore/$types';
 
 /** @type {import('./$types').PageLoad} */
 export const load: PageLoad = async () => {
-	console.log('LOADED');
 	const company = get(current_company);
-	console.log(company);
 
 	let loaded = false;
 	let assets: QueryDocumentSnapshot<DocumentData>[] = [];

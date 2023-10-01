@@ -1,7 +1,17 @@
 /* Write your global styles here, in PostCSS syntax */
 @tailwind base;
-@tailwind base;
 @tailwind components;
 @tailwind utilities;
-@tailwind components;
-@tailwind utilities;
+@layer base {
+	@font-face {
+		font-family: 'lato';
+		src: url(fonts/Lato/Lato-Regular.ttf) format('truetype');
+	}
+	@font-face {
+		font-family: raleway;
+		src: url(fonts/Raleway/Raleway-VariableFont_wght.ttf);
+	}
+	a {
+		@apply hover:underline hover:text-blue;
+	}
+}

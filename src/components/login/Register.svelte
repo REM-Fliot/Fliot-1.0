@@ -1,70 +1,58 @@
 <script lang="ts">
-	import { db } from '$lib/firebase/firebase';
-	import { doc, setDoc } from 'firebase/firestore';
-	import { current_company } from '../../../../store/authStores';
-	import { UserType } from '../../../../types';
-	import { fliotPOST } from '../../../../utility/api-utility';
+	import { clientAuthHandlers } from '../../auth/auth';
+	import { creating_company } from '../../store/authStores';
 
+	let name = '';
 	let email = '';
-	let company_name = '';
 	let password = '';
 	let missing_fields = false;
 	let error = false;
 	let err_info = '';
+	let register = false;
 	let authenticating = false;
-	let success = false;
 
 	async function handleAuthenticate(event: any) {
 		event.preventDefault();
 		if (authenticating) return;
-		if (!email || !password) {
+		if (!email || (!password && !register)) {
 			missing_fields = true;
 			return;
 		}
 		authenticating = true;
 		//Have the required information
-		const body = {
-			email: email,
-			pass: password,
-			username: 'ROOT'
-		};
-		const response = await fliotPOST('private/admin/add-user', body);
-		const uid = await response.text();
-		await setDoc(doc(db, 'companies', $current_company!, 'end-users', company_name), {});
-		await setDoc(
-			doc(db, 'companies', $current_company!, 'end-users', company_name, 'employees', uid),
-			{
-				EMAIL: email,
-				USERNAME: 'ROOT',
-				IS_ADMIN: true
+		try {
+			if (!register) {
+				await clientAuthHandlers.login(email, password);
+			} else {
+				creating_company.set(true);
+				await clientAuthHandlers.addCompany(email, password, name);
+				creating_company.set(false);
 			}
-		);
-		await setDoc(doc(db, 'users', uid), {
-			EMAIL: email,
-			COMPANY: company_name,
-			USER_TYPE: UserType.ENDUSER,
-			TECHNICIAN_COMPANY: $current_company
-		});
-		authenticating = false;
-		error = false;
-		email = '';
-		company_name = '';
-		password = '';
-		success = true;
+		} catch (err) {
+			console.log('There was an AUTH error: ', err);
+			err_info = <string>err;
+			error = true;
+			authenticating = false;
+		}
+	}
+	function toggleRegister() {
+		register = !register;
 	}
 </script>
 
 <div class="authContainer">
 	<form on:submit={handleAuthenticate}>
-		<h2 id="login-title">Add New Technician</h2>
+		<h2 id="login-title">{register ? 'Register' : 'Login'}</h2>
 		{#if missing_fields}
 			<p class="error">Missing Fields</p>
 		{:else if error}
 			<p class="error">{err_info}</p>
 		{/if}
-		<label>
-			<input bind:value={company_name} type="text" placeholder="Company Name" />
-		</label>
+		{#if register}
+			<label>
+				<input bind:value={name} type="text" placeholder="Company Name" />
+			</label>
+		{/if}
 		<label>
 			<input bind:value={email} type="email" placeholder="Email" />
 		</label>
@@ -77,15 +65,33 @@
 		{:else}
 			<button id="submit" type="submit">Submit</button>
 		{/if}
-		{#if success}
-			<span id="success">User successfully added!</span>
-		{/if}
 	</form>
+	<div class="options">
+		<p>Or</p>
+		{#if register}
+			<div>
+				<p>
+					<span>Already have an account?</span>
+					<span>&nbsp;</span>
+					<span on:click={toggleRegister} on:keydown={() => {}}>Login</span>
+				</p>
+			</div>
+		{:else}
+			<div>
+				<p>
+					<span>Don't have an account?</span>
+					<span>&nbsp;</span>
+					<span on:click={toggleRegister} on:keydown={() => {}}>Register</span>
+				</p>
+			</div>
+		{/if}
+	</div>
 </div>
 
 <style>
-	#success {
-		color: green;
+	@font-face {
+		src: url(fonts/Lato/Lato-Regular.ttf);
+		font-family: lato;
 	}
 	.authContainer {
 		display: flex;
@@ -142,6 +148,15 @@
 		border-style: solid;
 		transition-duration: 0.25s;
 		padding: 0.2rem;
+		cursor: pointer;
+	}
+
+	.options {
+		text-align: center;
+	}
+	.options p:last-child span:last-child:hover {
+		color: #34ace0;
+		text-decoration: underline;
 		cursor: pointer;
 	}
 	.error {

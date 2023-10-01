@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { current_company, is_admin, user_type } from '../../../store/authStores';
 	import { UserType } from '../../../types';
-	console.log($current_company);
 </script>
 
 <div>

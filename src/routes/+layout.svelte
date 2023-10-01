@@ -12,7 +12,6 @@
 
 	onDestroy(() => {
 		if (unsubscribe !== null) {
-			console.log('unsubscribing from auth listener');
 			unsubscribe();
 		}
 	});

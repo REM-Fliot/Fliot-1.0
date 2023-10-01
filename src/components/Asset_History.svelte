@@ -1,6 +1,6 @@
 <script>
 	import { page } from '$app/stores';
-	import { Asset_list, Asset } from '../store/asset';
+	import { Asset_list } from '../store/asset';
 
 	const id = $page.params.id;
 
@@ -17,8 +17,6 @@
 			this.content = content;
 		}
 	}
-
-	console.log();
 
 	const report_list = [
 		new Report(
@@ -40,7 +38,7 @@
 		<td><a href={`./${id}/new_report`}>+ New Report</a></td>
 	</tr>
 	{#each report_list as report}
-		<tr class="table-row"> {report.assetId} {report.title} {report.date} {report.type}</tr>
+		<tr class="table-row">{report.assetId} {report.title} {report.date} {report.type}</tr>
 	{/each}
 	<tr />
 </table>
