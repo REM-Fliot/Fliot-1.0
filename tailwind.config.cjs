@@ -11,7 +11,8 @@ export default {
 			white: '#ffffff',
 			black: '#1e272e',
 			dark_blue: '#357DED',
-			off_black: '#373F51'
+			off_black: '#373F51',
+			transparent: 'transparent'
 		},
 		extend: {}
 	},

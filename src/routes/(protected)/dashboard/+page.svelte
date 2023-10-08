@@ -1,17 +1,37 @@
 <script lang="ts">
-	import { current_company, is_admin, user_type } from '../../../store/authStores';
+	import { invalidateAll } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import SearchFeature from '../../../components/Search_feature.svelte';
+	import Spinner from '../../../components/Spinner.svelte';
+	import { is_admin, user_type } from '../../../store/authStores';
 	import { UserType } from '../../../types';
+	export let data;
+
+	$: assets = data.assets;
+	$: local_loaded = data.loaded;
+	onMount(async () => {
+		if (!local_loaded) {
+			await invalidateAll();
+		}
+	});
 </script>
 
-<div>
+<!-- <div>
 	{#if $current_company}
 		<h1>{$current_company}'s Dashboard</h1>
 	{/if}
 	{#if $user_type}
 		<h1>You are a {$user_type}</h1>
 	{/if}
-</div>
+</div> -->
 
+<!-- START OF REFORMED DASHBOARD -->
+{#if !local_loaded}
+	<Spinner />
+{:else}
+	<SearchFeature {assets} />
+{/if}
+<!-- END OF REFORMED DASHBOARD -->
 <a data-sveltekit-preload-data="hover" href="/firestore">
 	<button>Go to firestore access page</button>
 </a>
