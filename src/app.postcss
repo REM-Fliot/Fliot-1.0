@@ -4,14 +4,17 @@
 @tailwind utilities;
 @layer base {
 	@font-face {
-		font-family: 'lato';
-		src: url(fonts/Lato/Lato-Regular.ttf) format('truetype');
+		font-family: 'Open Sans';
+		src: url(fonts/Open_Sans/OpenSans-VariableFont.ttf) format('truetype');
 	}
 	@font-face {
-		font-family: raleway;
+		font-family: 'raleway';
 		src: url(fonts/Raleway/Raleway-VariableFont_wght.ttf);
 	}
 	a {
 		@apply hover:underline hover:text-blue;
+	}
+	html {
+		@apply font-normal;
 	}
 }

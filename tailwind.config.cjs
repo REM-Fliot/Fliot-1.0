@@ -2,14 +2,16 @@ export default {
 	plugins: [],
 	theme: {
 		fontFamily: {
-			sans: ['lato'],
+			sans: ['"Open Sans"'],
 			logo: ['raleway']
 		},
 		colors: {
 			blue: '#34ace0',
 			red: '#e03456',
 			white: '#ffffff',
-			black: '#1e272e'
+			black: '#1e272e',
+			dark_blue: '#357DED',
+			off_black: '#373F51'
 		},
 		extend: {}
 	},
