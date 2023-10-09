@@ -21,6 +21,7 @@
 	let col_ref: CollectionReference<DocumentData>;
 	//---BINDED---
 	let username_update: string;
+	let employee_being_modified: QueryDocumentSnapshot<DocumentData>;
 
 	onMount(async () => {
 		if (!local_loaded) {
@@ -40,8 +41,8 @@
 	};
 	const handleModify = async (employee: QueryDocumentSnapshot<DocumentData>) => {
 		const data = employee.data();
+		employee_being_modified = employee;
 		username_update = data.USERNAME;
-		employee.is_modifying = true;
 		global_modifying = true;
 	};
 	const handleUpdate = async (employee: QueryDocumentSnapshot<DocumentData>) => {
@@ -63,46 +64,111 @@
 	};
 </script>
 
-<h1>{company}'s employees</h1>
-{#if !local_loaded}
-	<Spinner />
-{:else}
-	{#each employees as employee}
-		<div class="employee">
-			{#if employee.is_modifying}
+<div class="my-10 flex flex-row">
+	<div class="w-1/2">
+		<h1 class="text-3xl">{company}'s technicians</h1>
+		{#if !local_loaded}
+			<Spinner />
+		{:else}
+			<div class="flex flex-col my-6">
+				{#each employees as employee}
+					<div class="p-4 flex flex-row">
+						<img alt="A default technician" src="/svgs/admin/manage-users/technician.svg" />
+						<div class="flex flex-col p-2 w-1/2 gap-1">
+							{#if employee.is_modifying}
+								<form
+									on:submit={() => {
+										handleUpdate(employee);
+									}}
+								>
+									<label>
+										<b>Name:&nbsp;</b>
+										<input type="text" placeholder="Name" bind:value={username_update} />
+									</label>
+									<button>Update</button>
+								</form>
+							{:else}
+								<div>
+									<b>Name:&nbsp;</b>
+									{employee.data().USERNAME}
+								</div>
+							{/if}
+							<div>
+								<b>Email:&nbsp;</b>
+								{employee.data().EMAIL}
+							</div>
+							<!-- {#if employee.data().IS_ADMIN} -->
+							<p class={employee.data().IS_ADMIN ? '' : ' invisible'}>ADMIN</p>
+							<!-- {/if} -->
+						</div>
+						<div class="flex flex-row ml-auto p-2">
+							{#if employee.data().EMAIL != client_auth.currentUser?.email}
+								<!-- <button
+									class="px-2 hover:bg-red rounded-l-lg border-l-2 border-t-2 border-b-2 border-black"
+									on:click={() => handleDelete(employee.id)}
+								>
+									<img
+										width="35"
+										alt="A default technician"
+										src="/svgs/admin/manage-users/remove_technician.svg"
+									/>
+								</button> -->
+
+								<!-- <button on:click={() => handleToggleAdmin(employee.id, !employee.data().IS_ADMIN)}>
+									{employee.data().IS_ADMIN ? 'Remove Admin' : 'Add Admin'}
+								</button> -->
+
+								<button
+									class={'p-2 m-3 hover:bg-off_black border-black border-2 rounded-full'}
+									on:click={() => handleModify(employee)}
+								>
+									<img alt="edit technician" src="/svgs/admin/manage-users/edit.svg " width="35" />
+								</button>
+							{/if}
+						</div>
+					</div>
+				{/each}
+			</div>
+			<button
+				class={'p-2 w-2/5 text-2xl rounded-2xl hover:bg-blue cursor-pointer border-2 border-black' +
+					(global_modifying ? ' shadow-inner' : '')}
+			>
+				<div class="flex">
+					<img alt="An arrow to login" src="svgs/admin/manage-users/add_technician.svg" />
+					<p class="my-auto">&nbsp; Add Technician</p>
+				</div>
+			</button>
+		{/if}
+	</div>
+	{#if global_modifying}
+		<div class="w-1/2 border-2 border-black rounded-lg p-4">
+			<h2 class="text-center text-3xl">Modify Technician:</h2>
+			<div class="">
 				<form
+					class="flex flex-col gap-4"
 					on:submit={() => {
-						handleUpdate(employee);
+						handleUpdate(employee_being_modified);
 					}}
 				>
 					<label>
-						Name: <input type="text" placeholder="Name" bind:value={username_update} />
+						<h3>Name:</h3>
+						<input bind:value={username_update} type="text" placeholder="Name" />
 					</label>
-					<button>Update</button>
+					<label>
+						<h3>Admin status:</h3>
+						<input bind:value={username_update} type="radio" placeholder="Name" />
+						<input bind:value={username_update} type="radio" placeholder="Name" />
+					</label>
+					<label>
+						<h3>Delete user:</h3>
+						<input bind:value={username_update} type="checkbox" placeholder="Name" />
+					</label>
+					<div class="flex flex-row gap-2">
+						<button class="p-4 rounded-lg border-2 w-3/4 bg-blue">Confirm Changes</button>
+						<button class="p-4 rounded-lg border-2 w-1/4 bg-red">Delete User</button>
+					</div>
 				</form>
-			{:else}
-				<div>Name: {employee.data().USERNAME}</div>
-			{/if}
-			<div>Email: {employee.data().EMAIL}</div>
-			{#if employee.data().EMAIL != client_auth.currentUser?.email}
-				<button on:click={() => handleDelete(employee.id)}>Delete</button>
-
-				<button on:click={() => handleToggleAdmin(employee.id, !employee.data().IS_ADMIN)}>
-					{employee.data().IS_ADMIN ? 'Remove Admin' : 'Add Admin'}
-				</button>
-
-				{#if !global_modifying}
-					<button on:click={() => handleModify(employee)}>Modify</button>
-				{/if}
-			{/if}
+			</div>
 		</div>
-	{/each}
-{/if}
-
-<style>
-	.employee {
-		margin: 0.5rem 0rem;
-		padding: 0.25rem;
-		/* border: 3px solid black; */
-	}
-</style>
+	{/if}
+</div>

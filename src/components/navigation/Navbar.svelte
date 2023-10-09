@@ -25,11 +25,12 @@
 </script>
 
 <div class="w-full h-screen bg-black flex flex-col">
-	<h1 class="text-center text-8xl p-4 flex justify-center font-logo">
+	<!-- <h1 class="text-center text-8xl p-4 flex justify-center font-logo">
 		<span class="text-white">Fl</span>
 		<span class="text-blue">iot</span>
-	</h1>
-	<div class="flex flex-col gap-y-10 my-10 flex-grow justify-between">
+	</h1> -->
+	<img alt="The Fliot Logo" src="/svgs/fliot_logo_white.svg" />
+	<div class="flex flex-col gap-y-5 my-10 flex-grow justify-between">
 		<div class="flex flex-col gap-y-6">
 			<a class={assets ? selected : not_selected} href="/dashboard">
 				<div class="flex">
