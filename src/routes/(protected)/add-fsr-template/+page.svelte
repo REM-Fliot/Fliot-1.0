@@ -1,14 +1,6 @@
 <script lang="ts">
-	import { collection, addDoc } from 'firebase/firestore';
 	import { client_auth, db } from '$lib/firebase/firebase';
-	import {
-		FsrDataToHtml,
-		FSRdata,
-		ContentCheckbox,
-		ContentText,
-		ContentRadio,
-		ContentTextarea
-	} from '../../../utility/fsr_html_conversion';
+	import { addDoc, collection } from 'firebase/firestore';
 	import { current_company } from '../../../store/authStores';
 
 	let components_list: string[] = [];
@@ -23,8 +15,8 @@
 	let blurFlag = false;
 	let templateName = '';
 	let structuredData: {}[] = [];
-    let user = client_auth.currentUser;
-    const company = $current_company!
+	let user = client_auth.currentUser;
+	const company = $current_company!;
 
 	// [
 	//     {
@@ -93,7 +85,6 @@
 			});
 		} else {
 			const listCount = arrayTempHolder.length;
-			console.log(listCount);
 			let content = [];
 			let str = labelTag;
 			for (let i = 0; i < listCount; i++) {
@@ -157,10 +148,10 @@
 	<div class="centered">
 		<div class="save-container">
 			<form on:submit={() => handleTemplateSubmit()}>
-				<label for="template-name">Enter Template Name: </label>
+				<label for="template-name">Enter Template Name:</label>
 				<input class="template-name" type="text" id="template-name" bind:value={templateName} />
 				<button type="submit">Save</button>
-				<button on:click={() => (blurFlag = false)}> &lt; Go back </button>
+				<button on:click={() => (blurFlag = false)}>&lt; Go back</button>
 			</form>
 		</div>
 	</div>

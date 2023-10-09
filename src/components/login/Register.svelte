@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { clientAuthHandlers } from '../auth/auth';
-	import { creating_company } from '../store/authStores';
+	import { clientAuthHandlers } from '../../auth/auth';
+	import { creating_company } from '../../store/authStores';
 
 	let name = '';
 	let email = '';
@@ -61,9 +61,9 @@
 		</label>
 
 		{#if authenticating}
-			<button id="submit-disabled" type="button"> Connecting... </button>
+			<button id="submit-disabled" type="button">Connecting...</button>
 		{:else}
-			<button id="submit" type="submit"> Submit </button>
+			<button id="submit" type="submit">Submit</button>
 		{/if}
 	</form>
 	<div class="options">

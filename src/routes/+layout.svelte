@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onAuthStateChanged } from 'firebase/auth';
 	import { onDestroy } from 'svelte';
+	import '../app.postcss';
 	import resolveUser from '../auth/resolve-user';
 	import Spinner from '../components/Spinner.svelte';
 	import { client_auth } from '../lib/firebase/firebase';
@@ -11,7 +12,6 @@
 
 	onDestroy(() => {
 		if (unsubscribe !== null) {
-			console.log('unsubscribing from auth listener');
 			unsubscribe();
 		}
 	});

@@ -43,10 +43,22 @@
 	};
 </script>
 
-<div>
-	<form>
-		<input placeholder="Search by client, asset, location" bind:value={user_input} />
-	</form>
+<div class="flex flex-col">
+	<!-- <form class="w-"> -->
+	<div class="w-full flex my-10 relative">
+		<input
+			class=" grow text-xl p-3 border-black border-2 rounded-2xl"
+			placeholder="Search by client, asset, location"
+			bind:value={user_input}
+		/>
+		<img
+			class="absolute bottom-0.5 right-1"
+			alt="An arrow to login"
+			src="/svgs/assets/search.svg"
+		/>
+	</div>
+
+	<!-- </form> -->
 	<table class="returned-results">
 		<tr>
 			<th class="table-heading">Asset Name</th>
@@ -62,9 +74,9 @@
 				<td class="table-entry">{result.data().ASSET_LOCATION}</td>
 				<td><a href={`./asset/${result.data().ASSET_ID}/new_report`}>+ New Report</a></td>
 				<td><a href={`./asset/${result.data().ASSET_ID}/history`}>Asset History</a></td>
-				<td
-					><a href={`./asset/${result.data().ASSET_ID}/customer_inquiries`}>Customer Inquiries</a
-					></td>
+				<td>
+					<a href={`./asset/${result.data().ASSET_ID}/customer_inquiries`}>Customer Inquiries</a>
+				</td>
 			</tr>
 		{/each}
 	</table>
