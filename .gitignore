@@ -9,3 +9,4 @@ node_modules
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 fliot-authentication-firebase-adminsdk-d1e7c-a7220b3e58.json
+src/lib/firebase/fliot-backend-firebase-adminsdk-36kfd-cddadbd564.json
