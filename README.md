@@ -9,9 +9,9 @@
 
 ## Problem & Market: What problem are you solving, and who experiences this problem?
 
-- Market: Targeting medical equipment maintenance and repair servicing companies
-- Medical equipment types: X-Ray, CT-scan, MRI, etc.
-- Criticality of equipment: Healthcare facilities rely heavily on the few, but very expensive equipment they have. When an issue occurs, it needs to be fixed ASAP
+- **Market:** Targeting medical equipment maintenance and repair servicing companies
+- **Medical equipment types:** X-Ray, CT-scan, MRI, etc.
+- **Criticality of equipment:** Healthcare facilities rely heavily on the few, but very expensive equipment they have. When an issue occurs, it needs to be fixed ASAP
 
 ## The problem: 
 - Technicians not benefiting from past maintenance data to better diagnose new issues, and thus spending more time at their work.
