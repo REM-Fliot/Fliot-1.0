@@ -2,10 +2,10 @@
 
 **Development for this project has been suspended.**
 
-Helping technicians better diagnose issues and plan maintenance based on equipment history and latest AI models.
+<img width="1710" alt="image" src="https://github.com/user-attachments/assets/900231fc-4741-4f6e-a252-fb385510da93">
 
 ## Describe your project in 1 sentence:
-- Our AI-powered platform collects data on medical equipment to help technicians diagnose issues and plan maintenance
+- Our AI-powered platform collects data on medical equipment to help technicians diagnose issues and plan maintenance.
 
 ## Problem & Market: What problem are you solving, and who experiences this problem?
 
@@ -15,7 +15,7 @@ Helping technicians better diagnose issues and plan maintenance based on equipme
 
 ## The problem: 
 - Technicians not benefiting from past maintenance data to better diagnose new issues, and thus spending more time at their work.
-## How would you describe this problem if you were talking to a prospective customer? *
+## How would you describe this problem if you were talking to a prospective customer?
 - When a work order is triggered, medical equipment technicians often look for maintenance history to try to understand what the issue may be. It is often a hassle to find the right data. And when the data is found (past service reports), it rarely helps diagnose the current issue, mostly because of the lack of time to conduct a deep analysis.
 
 ## Solution: How do you plan to solve this problem? *
@@ -28,7 +28,7 @@ Helping technicians better diagnose issues and plan maintenance based on equipme
 - We've spoken to stakeholder in the healthcare system: the priority when an equipment breaks is to fix it ASAP; because the downtime costs are massive (monetary and client experience-wise); The quicker issues are solved by technicians, the more satisfied their clients will be;
 - Improved technician efficiency translated into direct cost savings (hours of work x technician salary) and indirect ones (customer experience)
 
-## Progress: List what you've done so far to move your idea forward. *
+## Progress: List what you've done so far to move your idea forward.
 - User research: talked to medical equipment technicians and healthcare facility operators; other conversations to come
 - Platform development: We are currently finalising our MVP
 
